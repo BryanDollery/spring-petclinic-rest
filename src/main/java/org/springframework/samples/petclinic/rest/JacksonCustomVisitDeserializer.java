@@ -30,7 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * @author Vitaliy Fedoriv
+ * @author Bryan Dollery
  */
 
 @SuppressWarnings("unused")

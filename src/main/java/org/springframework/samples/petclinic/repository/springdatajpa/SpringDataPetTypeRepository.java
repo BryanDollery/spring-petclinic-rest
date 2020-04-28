@@ -21,7 +21,7 @@ import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.repository.PetTypeRepository;
 
 /**
- * @author Vitaliy Fedoriv
+ * @author Bryan Dollery
  */
 
 public interface SpringDataPetTypeRepository extends PetTypeRepository, Repository<PetType, Integer>, PetTypeRepositoryOverride {

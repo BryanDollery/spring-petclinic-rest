@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Vitaliy Fedoriv
+ * @author Bryan Dollery
  */
 
 public class BindingErrorsResponse {

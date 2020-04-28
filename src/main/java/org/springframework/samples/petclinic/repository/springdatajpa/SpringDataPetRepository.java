@@ -28,7 +28,7 @@ import java.util.List;
  * Spring Data JPA specialization of the {@link PetRepository} interface
  *
  * @author Michael Isvy
- * @author Vitaliy Fedoriv
+ * @author Bryan Dollery
  */
 
 public interface SpringDataPetRepository extends PetRepository, Repository<Pet, Integer>, PetRepositoryOverride {

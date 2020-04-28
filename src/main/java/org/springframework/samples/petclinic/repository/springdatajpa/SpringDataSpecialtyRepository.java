@@ -22,7 +22,7 @@ import org.springframework.samples.petclinic.repository.SpecialtyRepository;
 
 
 /**
- * @author Vitaliy Fedoriv
+ * @author Bryan Dollery
  */
 
 public interface SpringDataSpecialtyRepository extends SpecialtyRepository, Repository<Specialty, Integer>, SpecialtyRepositoryOverride {

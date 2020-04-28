@@ -22,7 +22,7 @@ import org.springframework.samples.petclinic.model.Specialty;
 import java.util.Collection;
 
 /**
- * @author Vitaliy Fedoriv
+ * @author Bryan Dollery
  */
 
 public interface SpecialtyRepository {

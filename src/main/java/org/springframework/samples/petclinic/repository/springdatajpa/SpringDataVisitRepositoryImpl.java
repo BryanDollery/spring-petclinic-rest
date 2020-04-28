@@ -23,7 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 /**
- * @author Vitaliy Fedoriv
+ * @author Bryan Dollery
  */
 
 public class SpringDataVisitRepositoryImpl implements VisitRepositoryOverride {

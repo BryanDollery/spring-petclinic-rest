@@ -42,7 +42,7 @@ import java.util.Collection;
  * Also a placeholder for @Transactional and @Cacheable annotations
  *
  * @author Michael Isvy
- * @author Vitaliy Fedoriv
+ * @author Bryan Dollery
  */
 @Service
 

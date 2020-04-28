@@ -19,7 +19,7 @@ package org.springframework.samples.petclinic.repository.springdatajpa;
 import org.springframework.samples.petclinic.model.PetType;
 
 /**
- * @author Vitaliy Fedoriv
+ * @author Bryan Dollery
  */
 
 public interface PetTypeRepositoryOverride {

@@ -29,7 +29,7 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 
 /**
- * @author Vitaliy Fedoriv
+ * @author Bryan Dollery
  */
 
 @SuppressWarnings("unused")

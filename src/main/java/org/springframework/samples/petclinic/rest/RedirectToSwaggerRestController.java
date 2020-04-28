@@ -24,18 +24,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * @author Vitaliy Fedoriv
+ * @author Bryan Dollery
  */
 
 @RestController
 @CrossOrigin(exposedHeaders = "errors, content-type")
-@RequestMapping("/")
-public class RootRestController {
+public class RedirectToSwaggerRestController {
 
-    @RequestMapping(value = "/")
-    public void redirectToSwagger(HttpServletResponse response) throws IOException {
-        response.sendRedirect("/petclinic/swagger-ui.html");
+    public static final String SWAGGER_ENDPOINT = "/petclinic/api/swagger-ui.html";
+
+        @RequestMapping("/petclinic/api")
+    public void redirectPetclinicApiToSwagger(HttpServletResponse response) throws IOException {
+        response.sendRedirect(SWAGGER_ENDPOINT);
     }
-
 }
 

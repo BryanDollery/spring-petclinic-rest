@@ -28,7 +28,7 @@ import java.util.Collection;
  * @author Juergen Hoeller
  * @author Sam Brannen
  * @author Michael Isvy
- * @author Vitaliy Fedoriv
+ * @author Bryan Dollery
  */
 public interface VetRepository {
 

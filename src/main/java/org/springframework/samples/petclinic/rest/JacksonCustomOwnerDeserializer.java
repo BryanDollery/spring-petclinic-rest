@@ -25,7 +25,7 @@ import org.springframework.samples.petclinic.model.Owner;
 import java.io.IOException;
 
 /**
- * @author Vitaliy Fedoriv
+ * @author Bryan Dollery
  */
 
 @SuppressWarnings("unused")

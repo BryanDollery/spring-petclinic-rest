@@ -25,7 +25,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 /**
- * @author Vitaliy Fedoriv
+ * @author Bryan Dollery
  */
 
 public class SpringDataPetTypeRepositoryImpl implements PetTypeRepositoryOverride {
