@@ -15,14 +15,6 @@
  */
 package org.springframework.samples.petclinic.repository.jdbc;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
@@ -40,6 +32,13 @@ import org.springframework.samples.petclinic.repository.OwnerRepository;
 import org.springframework.samples.petclinic.util.EntityUtils;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+import javax.transaction.Transactional;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * A simple JDBC-based implementation of the {@link OwnerRepository} interface.
  *
@@ -56,9 +55,9 @@ import org.springframework.stereotype.Repository;
 @Profile("jdbc")
 public class JdbcOwnerRepositoryImpl implements OwnerRepository {
 
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    private SimpleJdbcInsert insertOwner;
+    private final SimpleJdbcInsert insertOwner;
 
     @Autowired
     public JdbcOwnerRepositoryImpl(DataSource dataSource) {
@@ -158,40 +157,40 @@ public class JdbcOwnerRepositoryImpl implements OwnerRepository {
             loadPetsAndVisits(owner);
         }
     }
-    
-	@Override
-	public Collection<Owner> findAll() throws DataAccessException {
-		List<Owner> owners = this.namedParameterJdbcTemplate.query(
-	            "SELECT id, first_name, last_name, address, city, telephone FROM owners",
-	            new HashMap<String, Object>(),
-	            BeanPropertyRowMapper.newInstance(Owner.class));
-		for (Owner owner : owners) {
+
+    @Override
+    public Collection<Owner> findAll() throws DataAccessException {
+        List<Owner> owners = this.namedParameterJdbcTemplate.query(
+            "SELECT id, first_name, last_name, address, city, telephone FROM owners",
+            new HashMap<String, Object>(),
+            BeanPropertyRowMapper.newInstance(Owner.class));
+        for (Owner owner : owners) {
             loadPetsAndVisits(owner);
         }
-	    return owners;
-	}
+        return owners;
+    }
 
-	@Override
-	@Transactional
-	public void delete(Owner owner) throws DataAccessException {
-		Map<String, Object> owner_params = new HashMap<>();
-		owner_params.put("id", owner.getId());
+    @Override
+    @Transactional
+    public void delete(Owner owner) throws DataAccessException {
+        Map<String, Object> owner_params = new HashMap<>();
+        owner_params.put("id", owner.getId());
         List<Pet> pets = owner.getPets();
         // cascade delete pets
-        for (Pet pet : pets){
-        	Map<String, Object> pet_params = new HashMap<>();
-        	pet_params.put("id", pet.getId());
-        	// cascade delete visits
-        	List<Visit> visits = pet.getVisits();
-            for (Visit visit : visits){
-            	Map<String, Object> visit_params = new HashMap<>();
-            	visit_params.put("id", visit.getId());
-            	this.namedParameterJdbcTemplate.update("DELETE FROM visits WHERE id=:id", visit_params);
+        for (Pet pet : pets) {
+            Map<String, Object> pet_params = new HashMap<>();
+            pet_params.put("id", pet.getId());
+            // cascade delete visits
+            List<Visit> visits = pet.getVisits();
+            for (Visit visit : visits) {
+                Map<String, Object> visit_params = new HashMap<>();
+                visit_params.put("id", visit.getId());
+                this.namedParameterJdbcTemplate.update("DELETE FROM visits WHERE id=:id", visit_params);
             }
             this.namedParameterJdbcTemplate.update("DELETE FROM pets WHERE id=:id", pet_params);
         }
         this.namedParameterJdbcTemplate.update("DELETE FROM owners WHERE id=:id", owner_params);
-	}
+    }
 
 
 }

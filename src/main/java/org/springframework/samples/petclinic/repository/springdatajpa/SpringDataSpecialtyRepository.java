@@ -24,7 +24,6 @@ import org.springframework.samples.petclinic.repository.SpecialtyRepository;
 
 /**
  * @author Vitaliy Fedoriv
- *
  */
 
 @Profile("spring-data-jpa")

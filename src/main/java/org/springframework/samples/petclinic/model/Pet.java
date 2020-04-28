@@ -15,12 +15,14 @@
  */
 package org.springframework.samples.petclinic.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PropertyComparator;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.samples.petclinic.rest.JacksonCustomPetDeserializer;
+import org.springframework.samples.petclinic.rest.JacksonCustomPetSerializer;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -32,16 +34,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PropertyComparator;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.samples.petclinic.rest.JacksonCustomPetDeserializer;
-import org.springframework.samples.petclinic.rest.JacksonCustomPetSerializer;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Simple business object representing a pet.
@@ -72,13 +70,12 @@ public class Pet extends NamedEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
     private Set<Visit> visits;
 
+    public Date getBirthDate() {
+        return this.birthDate;
+    }
 
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
-    }
-
-    public Date getBirthDate() {
-        return this.birthDate;
     }
 
     public PetType getType() {
@@ -96,6 +93,7 @@ public class Pet extends NamedEntity {
     public void setOwner(Owner owner) {
         this.owner = owner;
     }
+
     @JsonIgnore
     protected Set<Visit> getVisitsInternal() {
         if (this.visits == null) {

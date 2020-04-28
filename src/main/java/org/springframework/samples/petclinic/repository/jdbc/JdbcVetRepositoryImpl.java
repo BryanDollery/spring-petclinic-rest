@@ -15,16 +15,6 @@
  */
 package org.springframework.samples.petclinic.repository.jdbc;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
@@ -40,6 +30,15 @@ import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.repository.VetRepository;
 import org.springframework.samples.petclinic.util.EntityUtils;
 import org.springframework.stereotype.Repository;
+
+import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A simple JDBC-based implementation of the {@link VetRepository} interface.
@@ -57,15 +56,15 @@ import org.springframework.stereotype.Repository;
 @Profile("jdbc")
 public class JdbcVetRepositoryImpl implements VetRepository {
 
-    private JdbcTemplate jdbcTemplate;
-	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-	private SimpleJdbcInsert insertVet;
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final SimpleJdbcInsert insertVet;
 
     @Autowired
     public JdbcVetRepositoryImpl(DataSource dataSource, JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-		this.insertVet = new SimpleJdbcInsert(dataSource).withTableName("vets").usingGeneratedKeyColumns("id");
-		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        this.insertVet = new SimpleJdbcInsert(dataSource).withTableName("vets").usingGeneratedKeyColumns("id");
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
     /**
@@ -102,73 +101,73 @@ public class JdbcVetRepositoryImpl implements VetRepository {
         }
         return vets;
     }
-    
-	@Override
-	public Vet findById(int id) throws DataAccessException {
-		Vet vet;
-		try {
-			Map<String, Object> vet_params = new HashMap<>();
-			vet_params.put("id", id);
-			vet = this.namedParameterJdbcTemplate.queryForObject(
-					"SELECT id, first_name, last_name FROM vets WHERE id= :id",
-					vet_params,
-					BeanPropertyRowMapper.newInstance(Vet.class));
 
-			final List<Specialty> specialties = this.namedParameterJdbcTemplate.query(
-					"SELECT id, name FROM specialties", vet_params, BeanPropertyRowMapper.newInstance(Specialty.class));
+    @Override
+    public Vet findById(int id) throws DataAccessException {
+        Vet vet;
+        try {
+            Map<String, Object> vet_params = new HashMap<>();
+            vet_params.put("id", id);
+            vet = this.namedParameterJdbcTemplate.queryForObject(
+                "SELECT id, first_name, last_name FROM vets WHERE id= :id",
+                vet_params,
+                BeanPropertyRowMapper.newInstance(Vet.class));
 
-			final List<Integer> vetSpecialtiesIds = this.namedParameterJdbcTemplate.query(
-					"SELECT specialty_id FROM vet_specialties WHERE vet_id=:id",
-					vet_params,
-					new BeanPropertyRowMapper<Integer>() {
-						@Override
-						public Integer mapRow(ResultSet rs, int row) throws SQLException {
-							return rs.getInt(1);
-						}
-					});
-			for (int specialtyId : vetSpecialtiesIds) {
-				Specialty specialty = EntityUtils.getById(specialties, Specialty.class, specialtyId);
-				vet.addSpecialty(specialty);
-			}
+            final List<Specialty> specialties = this.namedParameterJdbcTemplate.query(
+                "SELECT id, name FROM specialties", vet_params, BeanPropertyRowMapper.newInstance(Specialty.class));
 
-		} catch (EmptyResultDataAccessException ex) {
-			throw new ObjectRetrievalFailureException(Vet.class, id);
-		}
-		return vet;
-	}
+            final List<Integer> vetSpecialtiesIds = this.namedParameterJdbcTemplate.query(
+                "SELECT specialty_id FROM vet_specialties WHERE vet_id=:id",
+                vet_params,
+                new BeanPropertyRowMapper<Integer>() {
+                    @Override
+                    public Integer mapRow(ResultSet rs, int row) throws SQLException {
+                        return rs.getInt(1);
+                    }
+                });
+            for (int specialtyId : vetSpecialtiesIds) {
+                Specialty specialty = EntityUtils.getById(specialties, Specialty.class, specialtyId);
+                vet.addSpecialty(specialty);
+            }
 
-	@Override
-	public void save(Vet vet) throws DataAccessException {
-		BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(vet);
-		if (vet.isNew()) {
-			Number newKey = this.insertVet.executeAndReturnKey(parameterSource);
-			vet.setId(newKey.intValue());
-			updateVetSpecialties(vet);
-		} else {
-			this.namedParameterJdbcTemplate
-					.update("UPDATE vets SET first_name=:firstName, last_name=:lastName WHERE id=:id", parameterSource);
-			updateVetSpecialties(vet);
-		}
-	}
+        } catch (EmptyResultDataAccessException ex) {
+            throw new ObjectRetrievalFailureException(Vet.class, id);
+        }
+        return vet;
+    }
 
-	@Override
-	public void delete(Vet vet) throws DataAccessException {
-		Map<String, Object> params = new HashMap<>();
-		params.put("id", vet.getId());
-		this.namedParameterJdbcTemplate.update("DELETE FROM vet_specialties WHERE vet_id=:id", params);
-		this.namedParameterJdbcTemplate.update("DELETE FROM vets WHERE id=:id", params);
-	}
-	
-	private void updateVetSpecialties(Vet vet) throws DataAccessException {
-		Map<String, Object> params = new HashMap<>();
-		params.put("id", vet.getId());
-		this.namedParameterJdbcTemplate.update("DELETE FROM vet_specialties WHERE vet_id=:id", params);
-		for (Specialty spec : vet.getSpecialties()) {
-			params.put("spec_id", spec.getId());
-			if(!(spec.getId() == null)) {
-				this.namedParameterJdbcTemplate.update("INSERT INTO vet_specialties VALUES (:id, :spec_id)", params);
-			}
-		}
-	}
+    @Override
+    public void save(Vet vet) throws DataAccessException {
+        BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(vet);
+        if (vet.isNew()) {
+            Number newKey = this.insertVet.executeAndReturnKey(parameterSource);
+            vet.setId(newKey.intValue());
+            updateVetSpecialties(vet);
+        } else {
+            this.namedParameterJdbcTemplate
+                .update("UPDATE vets SET first_name=:firstName, last_name=:lastName WHERE id=:id", parameterSource);
+            updateVetSpecialties(vet);
+        }
+    }
+
+    @Override
+    public void delete(Vet vet) throws DataAccessException {
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", vet.getId());
+        this.namedParameterJdbcTemplate.update("DELETE FROM vet_specialties WHERE vet_id=:id", params);
+        this.namedParameterJdbcTemplate.update("DELETE FROM vets WHERE id=:id", params);
+    }
+
+    private void updateVetSpecialties(Vet vet) throws DataAccessException {
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", vet.getId());
+        this.namedParameterJdbcTemplate.update("DELETE FROM vet_specialties WHERE vet_id=:id", params);
+        for (Specialty spec : vet.getSpecialties()) {
+            params.put("spec_id", spec.getId());
+            if (!(spec.getId() == null)) {
+                this.namedParameterJdbcTemplate.update("INSERT INTO vet_specialties VALUES (:id, :spec_id)", params);
+            }
+        }
+    }
 
 }

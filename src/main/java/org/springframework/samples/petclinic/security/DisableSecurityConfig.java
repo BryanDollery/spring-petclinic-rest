@@ -18,10 +18,10 @@ public class DisableSecurityConfig extends WebSecurityConfigurerAdapter {
         // @formatter:off
         http
             .authorizeRequests()
-                .anyRequest().permitAll()
-                .and()
+            .anyRequest().permitAll()
+            .and()
             .csrf()
-                .disable();
+            .disable();
         // @formatter:on
     }
 }

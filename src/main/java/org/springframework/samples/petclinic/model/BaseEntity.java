@@ -15,12 +15,12 @@
  */
 package org.springframework.samples.petclinic.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Simple JavaBean domain object with an id property. Used as a base class for objects needing this property.
@@ -41,6 +41,7 @@ public class BaseEntity {
     public void setId(Integer id) {
         this.id = id;
     }
+
     @JsonIgnore
     public boolean isNew() {
         return this.id == null;

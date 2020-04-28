@@ -15,18 +15,17 @@
  */
 package org.springframework.samples.petclinic.repository.jpa;
 
-import java.util.Collection;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate5.support.OpenSessionInViewFilter;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.repository.OwnerRepository;
 import org.springframework.stereotype.Repository;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.Collection;
 
 /**
  * JPA implementation of the {@link OwnerRepository} interface.
@@ -81,16 +80,16 @@ public class JpaOwnerRepositoryImpl implements OwnerRepository {
 
     }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Collection<Owner> findAll() throws DataAccessException {
-		Query query = this.em.createQuery("SELECT owner FROM Owner owner");
+    @SuppressWarnings("unchecked")
+    @Override
+    public Collection<Owner> findAll() throws DataAccessException {
+        Query query = this.em.createQuery("SELECT owner FROM Owner owner");
         return query.getResultList();
-	}
+    }
 
-	@Override
-	public void delete(Owner owner) throws DataAccessException {
-		this.em.remove(this.em.contains(owner) ? owner : this.em.merge(owner));
-	}
+    @Override
+    public void delete(Owner owner) throws DataAccessException {
+        this.em.remove(this.em.contains(owner) ? owner : this.em.merge(owner));
+    }
 
 }
