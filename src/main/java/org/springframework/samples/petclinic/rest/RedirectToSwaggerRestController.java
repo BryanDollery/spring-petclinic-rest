@@ -29,12 +29,12 @@ import java.io.IOException;
 
 @RestController
 @CrossOrigin(exposedHeaders = "errors, content-type")
+@RequestMapping("/")
 public class RedirectToSwaggerRestController {
 
     public static final String SWAGGER_ENDPOINT = "/petclinic/api/swagger-ui.html";
 
-        @RequestMapping("/petclinic/api")
-    public void redirectPetclinicApiToSwagger(HttpServletResponse response) throws IOException {
+    public void redirectToSwagger(HttpServletResponse response) throws IOException {
         response.sendRedirect(SWAGGER_ENDPOINT);
     }
 }
