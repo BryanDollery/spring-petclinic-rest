@@ -33,16 +33,18 @@ public class ExceptionControllerAdvice {
     public ResponseEntity<String> exception(Exception e) {
         ObjectMapper mapper = new ObjectMapper();
         ErrorInfo errorInfo = new ErrorInfo(e);
-        String respJSONstring = "{}";
+        String json = "{}";
+
         try {
-            respJSONstring = mapper.writeValueAsString(errorInfo);
+            json = mapper.writeValueAsString(errorInfo);
         } catch (JsonProcessingException e1) {
             e1.printStackTrace();
         }
-        return ResponseEntity.badRequest().body(respJSONstring);
+
+        return ResponseEntity.badRequest().body(json);
     }
 
-    private class ErrorInfo {
+    private static class ErrorInfo {
         public final String className;
         public final String exMessage;
 

@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ContextConfiguration(classes = ApplicationTestConfig.class)
 @WebAppConfiguration
 public class UserRestControllerTests {
-
+    private static final String PATH = "/users/";
     @Mock
     private UserService userService;
 
@@ -53,7 +53,7 @@ public class UserRestControllerTests {
         user.addRole( "OWNER_ADMIN" );
         ObjectMapper mapper = new ObjectMapper();
         String newVetAsJSON = mapper.writeValueAsString(user);
-        this.mockMvc.perform(post("/api/users/")
+        this.mockMvc.perform(post(PATH + "")
             .content(newVetAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isCreated());
     }
@@ -67,7 +67,7 @@ public class UserRestControllerTests {
         user.setEnabled(true);
         ObjectMapper mapper = new ObjectMapper();
         String newVetAsJSON = mapper.writeValueAsString(user);
-        this.mockMvc.perform(post("/api/users/")
+        this.mockMvc.perform(post(PATH + "")
             .content(newVetAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isBadRequest());
     }

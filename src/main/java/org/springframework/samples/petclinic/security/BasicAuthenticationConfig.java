@@ -15,8 +15,12 @@ import javax.sql.DataSource;
 @ConditionalOnProperty(name = "petclinic.security.enable", havingValue = "true")
 public class BasicAuthenticationConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private DataSource dataSource;
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    private final DataSource dataSource;
+
+    public BasicAuthenticationConfig(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

@@ -18,17 +18,19 @@ package org.springframework.samples.petclinic.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -36,54 +38,61 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.Collection;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
+
 /**
  * @author Vitaliy Fedoriv
  */
 
 @RestController
 @CrossOrigin(exposedHeaders = "errors, content-type")
-@RequestMapping("/api/owners")
+@RequestMapping("owners")
 public class OwnerRestController {
 
     @Autowired
     private ClinicService clinicService;
 
     @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
-    @RequestMapping(value = "/*/lastname/{lastName}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<Collection<Owner>> getOwnersList(@PathVariable("lastName") String ownerLastName) {
-        if (ownerLastName == null) {
-            ownerLastName = "";
-        }
-        Collection<Owner> owners = this.clinicService.findOwnerByLastName(ownerLastName);
-        if (owners.isEmpty()) {
-            return new ResponseEntity<Collection<Owner>>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<Collection<Owner>>(owners, HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping
     public ResponseEntity<Collection<Owner>> getOwners() {
         Collection<Owner> owners = this.clinicService.findAllOwners();
-        if (owners.isEmpty()) {
-            return new ResponseEntity<Collection<Owner>>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<Collection<Owner>>(owners, HttpStatus.OK);
+
+        if (owners.isEmpty())
+            return new ResponseEntity<>(NOT_FOUND);
+
+        return new ResponseEntity<>(owners, OK);
     }
 
     @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
-    @RequestMapping(value = "/{ownerId}", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(value = "/*/lastname/{lastName}")
+    public ResponseEntity<Collection<Owner>> getOwnersList(@PathVariable("lastName") String ownerLastName) {
+        if (ownerLastName == null)
+            ownerLastName = "";
+
+        Collection<Owner> owners = this.clinicService.findOwnerByLastName(ownerLastName);
+
+        if (owners.isEmpty())
+            return new ResponseEntity<>(NOT_FOUND);
+
+        return new ResponseEntity<>(owners, OK);
+    }
+
+    @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
+    @GetMapping(value = "/{ownerId}")
     public ResponseEntity<Owner> getOwner(@PathVariable("ownerId") int ownerId) {
-        Owner owner = null;
-        owner = this.clinicService.findOwnerById(ownerId);
-        if (owner == null) {
-            return new ResponseEntity<Owner>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<Owner>(owner, HttpStatus.OK);
+        Owner owner = this.clinicService.findOwnerById(ownerId);
+        if (owner == null)
+            return new ResponseEntity<>(NOT_FOUND);
+
+        return new ResponseEntity<>(owner, OK);
     }
 
     @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
-    @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json")
+    @PostMapping
     public ResponseEntity<Owner> addOwner(@RequestBody @Valid Owner owner, BindingResult bindingResult,
                                           UriComponentsBuilder ucBuilder) {
         HttpHeaders headers = new HttpHeaders();
@@ -91,48 +100,58 @@ public class OwnerRestController {
             BindingErrorsResponse errors = new BindingErrorsResponse(owner.getId());
             errors.addAllErrors(bindingResult);
             headers.add("errors", errors.toJSON());
-            return new ResponseEntity<Owner>(headers, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(headers, BAD_REQUEST);
         }
         this.clinicService.saveOwner(owner);
         headers.setLocation(ucBuilder.path("/api/owners/{id}").buildAndExpand(owner.getId()).toUri());
-        return new ResponseEntity<Owner>(owner, headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(owner, headers, CREATED);
     }
 
     @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
-    @RequestMapping(value = "/{ownerId}", method = RequestMethod.PUT, produces = "application/json")
-    public ResponseEntity<Owner> updateOwner(@PathVariable("ownerId") int ownerId, @RequestBody @Valid Owner owner,
-                                             BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
+    @PutMapping(value = "/{ownerId}")
+    @Transactional
+    public ResponseEntity<Owner> updateOwner(@PathVariable("ownerId") int ownerId,
+                                             @RequestBody @Valid Owner owner,
+                                             BindingResult bindingResult,
+                                             UriComponentsBuilder ucBuilder) {
+
         boolean bodyIdMatchesPathId = owner.getId() == null || ownerId == owner.getId();
+
         if (bindingResult.hasErrors() || !bodyIdMatchesPathId) {
             BindingErrorsResponse errors = new BindingErrorsResponse(ownerId, owner.getId());
             errors.addAllErrors(bindingResult);
             HttpHeaders headers = new HttpHeaders();
             headers.add("errors", errors.toJSON());
-            return new ResponseEntity<Owner>(headers, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(headers, BAD_REQUEST);
         }
+
         Owner currentOwner = this.clinicService.findOwnerById(ownerId);
-        if (currentOwner == null) {
-            return new ResponseEntity<Owner>(HttpStatus.NOT_FOUND);
-        }
+
+        if (currentOwner == null)
+            return new ResponseEntity<>(NOT_FOUND);
+
         currentOwner.setAddress(owner.getAddress());
         currentOwner.setCity(owner.getCity());
         currentOwner.setFirstName(owner.getFirstName());
         currentOwner.setLastName(owner.getLastName());
         currentOwner.setTelephone(owner.getTelephone());
         this.clinicService.saveOwner(currentOwner);
-        return new ResponseEntity<Owner>(currentOwner, HttpStatus.NO_CONTENT);
+
+        return new ResponseEntity<>(currentOwner, NO_CONTENT);
     }
 
     @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
-    @RequestMapping(value = "/{ownerId}", method = RequestMethod.DELETE, produces = "application/json")
+    @DeleteMapping(value = "/{ownerId}")
     @Transactional
     public ResponseEntity<Void> deleteOwner(@PathVariable("ownerId") int ownerId) {
         Owner owner = this.clinicService.findOwnerById(ownerId);
-        if (owner == null) {
-            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
-        }
+
+        if (owner == null)
+            return new ResponseEntity<>(NOT_FOUND);
+
         this.clinicService.deleteOwner(owner);
-        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+
+        return new ResponseEntity<>(NO_CONTENT);
     }
 
 }

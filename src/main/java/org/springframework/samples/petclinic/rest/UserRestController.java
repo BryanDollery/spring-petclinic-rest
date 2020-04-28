@@ -18,40 +18,44 @@ package org.springframework.samples.petclinic.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
+
 @RestController
 @CrossOrigin(exposedHeaders = "errors, content-type")
-@RequestMapping("api/users")
+@RequestMapping("users")
 public class UserRestController {
 
     @Autowired
     private UserService userService;
 
     @PreAuthorize("hasRole(@roles.ADMIN)")
-    @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json")
+    @PostMapping
     public ResponseEntity<User> addOwner(@RequestBody @Valid User user, BindingResult bindingResult) throws Exception {
         BindingErrorsResponse errors = new BindingErrorsResponse();
         HttpHeaders headers = new HttpHeaders();
+
         if (bindingResult.hasErrors() || (user == null)) {
             errors.addAllErrors(bindingResult);
             headers.add("errors", errors.toJSON());
-            return new ResponseEntity<User>(user, headers, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<User>(user, headers, BAD_REQUEST);
         }
 
         this.userService.saveUser(user);
-        return new ResponseEntity<User>(user, headers, HttpStatus.CREATED);
+
+        return new ResponseEntity<User>(user, headers, CREATED);
     }
 }

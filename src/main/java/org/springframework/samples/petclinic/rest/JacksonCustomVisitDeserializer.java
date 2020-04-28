@@ -17,7 +17,6 @@
 package org.springframework.samples.petclinic.rest;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,6 +33,7 @@ import java.util.Date;
  * @author Vitaliy Fedoriv
  */
 
+@SuppressWarnings("unused")
 public class JacksonCustomVisitDeserializer extends StdDeserializer<Visit> {
 
     public JacksonCustomVisitDeserializer() {
@@ -48,15 +48,15 @@ public class JacksonCustomVisitDeserializer extends StdDeserializer<Visit> {
     public Visit deserialize(JsonParser parser, DeserializationContext context) throws IOException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
         Visit visit = new Visit();
-        Pet pet = new Pet();
         ObjectMapper mapper = new ObjectMapper();
-        Date visitDate = null;
         JsonNode node = parser.getCodec().readTree(parser);
         JsonNode pet_node = node.get("pet");
-        pet = mapper.treeToValue(pet_node, Pet.class);
+        Pet pet = mapper.treeToValue(pet_node, Pet.class);
         int visitId = node.get("id").asInt();
         String visitDateStr = node.get("date").asText(null);
         String description = node.get("description").asText(null);
+
+        Date visitDate;
         try {
             visitDate = formatter.parse(visitDateStr);
         } catch (ParseException e) {
@@ -64,9 +64,9 @@ public class JacksonCustomVisitDeserializer extends StdDeserializer<Visit> {
             throw new IOException(e);
         }
 
-        if (!(visitId == 0)) {
+        if (!(visitId == 0))
             visit.setId(visitId);
-        }
+
         visit.setDate(visitDate);
         visit.setDescription(description);
         visit.setPet(pet);

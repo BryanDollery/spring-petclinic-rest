@@ -32,6 +32,7 @@ import java.text.SimpleDateFormat;
  * @author Vitaliy Fedoriv
  */
 
+@SuppressWarnings("unused")
 public class JacksonCustomPetSerializer extends StdSerializer<Pet> {
 
     public JacksonCustomPetSerializer() {
@@ -43,44 +44,46 @@ public class JacksonCustomPetSerializer extends StdSerializer<Pet> {
     }
 
     @Override
-    public void serialize(Pet pet, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+    public void serialize(Pet pet, JsonGenerator json, SerializerProvider provider) throws IOException {
         Format formatter = new SimpleDateFormat("yyyy/MM/dd");
-        jgen.writeStartObject(); // pet
-        if (pet.getId() == null) {
-            jgen.writeNullField("id");
-        } else {
-            jgen.writeNumberField("id", pet.getId());
-        }
-        jgen.writeStringField("name", pet.getName());
-        jgen.writeStringField("birthDate", formatter.format(pet.getBirthDate()));
+        json.writeStartObject(); // pet
+
+        if (pet.getId() == null)
+            json.writeNullField("id");
+        else
+            json.writeNumberField("id", pet.getId());
+
+        json.writeStringField("name", pet.getName());
+        json.writeStringField("birthDate", formatter.format(pet.getBirthDate()));
 
         PetType petType = pet.getType();
-        jgen.writeObjectFieldStart("type");
-        jgen.writeNumberField("id", petType.getId());
-        jgen.writeStringField("name", petType.getName());
-        jgen.writeEndObject(); // type
+        json.writeObjectFieldStart("type");
+        json.writeNumberField("id", petType.getId());
+        json.writeStringField("name", petType.getName());
+        json.writeEndObject(); // type
 
         Owner owner = pet.getOwner();
-        jgen.writeObjectFieldStart("owner");
-        jgen.writeNumberField("id", owner.getId());
-        jgen.writeStringField("firstName", owner.getFirstName());
-        jgen.writeStringField("lastName", owner.getLastName());
-        jgen.writeStringField("address", owner.getAddress());
-        jgen.writeStringField("city", owner.getCity());
-        jgen.writeStringField("telephone", owner.getTelephone());
-        jgen.writeEndObject(); // owner
-        // write visits array
-        jgen.writeArrayFieldStart("visits");
+        json.writeObjectFieldStart("owner");
+        json.writeNumberField("id", owner.getId());
+        json.writeStringField("firstName", owner.getFirstName());
+        json.writeStringField("lastName", owner.getLastName());
+        json.writeStringField("address", owner.getAddress());
+        json.writeStringField("city", owner.getCity());
+        json.writeStringField("telephone", owner.getTelephone());
+        json.writeEndObject(); // owner
+        json.writeArrayFieldStart("visits");
+
         for (Visit visit : pet.getVisits()) {
-            jgen.writeStartObject(); // visit
-            jgen.writeNumberField("id", visit.getId());
-            jgen.writeStringField("date", formatter.format(visit.getDate()));
-            jgen.writeStringField("description", visit.getDescription());
-            jgen.writeNumberField("pet", visit.getPet().getId());
-            jgen.writeEndObject(); // visit
+            json.writeStartObject(); // visit
+            json.writeNumberField("id", visit.getId());
+            json.writeStringField("date", formatter.format(visit.getDate()));
+            json.writeStringField("description", visit.getDescription());
+            json.writeNumberField("pet", visit.getPet().getId());
+            json.writeEndObject(); // visit
         }
-        jgen.writeEndArray(); // visits
-        jgen.writeEndObject(); // pet
+
+        json.writeEndArray(); // visits
+        json.writeEndObject(); // pet
     }
 
 }

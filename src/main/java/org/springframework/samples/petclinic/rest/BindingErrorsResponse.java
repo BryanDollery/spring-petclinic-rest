@@ -32,7 +32,7 @@ import java.util.List;
 
 public class BindingErrorsResponse {
 
-    private final List<BindingError> bindingErrors = new ArrayList<BindingError>();
+    private final List<BindingError> bindingErrors = new ArrayList<>();
 
     public BindingErrorsResponse() {
         this(null);
@@ -44,13 +44,14 @@ public class BindingErrorsResponse {
 
     public BindingErrorsResponse(Integer pathId, Integer bodyId) {
         boolean onlyBodyIdSpecified = pathId == null && bodyId != null;
-        if (onlyBodyIdSpecified) {
+
+        if (onlyBodyIdSpecified)
             addBodyIdError(bodyId, "must not be specified");
-        }
+
         boolean bothIdsSpecified = pathId != null && bodyId != null;
-        if (bothIdsSpecified && !pathId.equals(bodyId)) {
+
+        if (bothIdsSpecified && !pathId.equals(bodyId))
             addBodyIdError(bodyId, String.format("does not match pathId: %d", pathId));
-        }
     }
 
     private void addBodyIdError(Integer bodyId, String message) {
@@ -71,7 +72,10 @@ public class BindingErrorsResponse {
             BindingError error = new BindingError();
             error.setObjectName(fieldError.getObjectName());
             error.setFieldName(fieldError.getField());
-            error.setFieldValue(fieldError.getRejectedValue().toString());
+
+            if (fieldError.getRejectedValue() != null)
+                error.setFieldValue(fieldError.getRejectedValue().toString());
+
             error.setErrorMessage(fieldError.getDefaultMessage());
             addError(error);
         }
@@ -94,7 +98,7 @@ public class BindingErrorsResponse {
         return "BindingErrorsResponse [bindingErrors=" + bindingErrors + "]";
     }
 
-    protected class BindingError {
+    protected static class BindingError {
 
         private String objectName;
         private String fieldName;
@@ -131,5 +135,4 @@ public class BindingErrorsResponse {
         }
 
     }
-
 }

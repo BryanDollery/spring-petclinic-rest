@@ -15,7 +15,6 @@
  */
 package org.springframework.samples.petclinic.repository.springdatajpa;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -32,7 +31,6 @@ import java.util.List;
  * @author Vitaliy Fedoriv
  */
 
-@Profile("spring-data-jpa")
 public interface SpringDataPetRepository extends PetRepository, Repository<Pet, Integer>, PetRepositoryOverride {
 
     @Override

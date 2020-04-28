@@ -58,6 +58,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebAppConfiguration
 public class SpecialtyRestControllerTests {
 
+    public static final String PATH = "/specialties/";
+
     @Autowired
     private SpecialtyRestController specialtyRestController;
 
@@ -96,7 +98,7 @@ public class SpecialtyRestControllerTests {
     @WithMockUser(roles="VET_ADMIN")
     public void testGetSpecialtySuccess() throws Exception {
     	given(this.clinicService.findSpecialtyById(1)).willReturn(specialties.get(0));
-        this.mockMvc.perform(get("/api/specialties/1")
+        this.mockMvc.perform(get(PATH + "1")
         	.accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
             .andExpect(content().contentType("application/json"))
@@ -108,7 +110,7 @@ public class SpecialtyRestControllerTests {
     @WithMockUser(roles="VET_ADMIN")
     public void testGetSpecialtyNotFound() throws Exception {
     	given(this.clinicService.findSpecialtyById(-1)).willReturn(null);
-        this.mockMvc.perform(get("/api/specialties/-1")
+        this.mockMvc.perform(get(PATH + "-1")
         	.accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
     }
@@ -118,7 +120,7 @@ public class SpecialtyRestControllerTests {
     public void testGetAllSpecialtysSuccess() throws Exception {
     	specialties.remove(0);
     	given(this.clinicService.findAllSpecialties()).willReturn(specialties);
-        this.mockMvc.perform(get("/api/specialties/")
+        this.mockMvc.perform(get(PATH + "")
         	.accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType("application/json"))
@@ -133,7 +135,7 @@ public class SpecialtyRestControllerTests {
     public void testGetAllSpecialtysNotFound() throws Exception {
     	specialties.clear();
     	given(this.clinicService.findAllSpecialties()).willReturn(specialties);
-        this.mockMvc.perform(get("/api/specialties/")
+        this.mockMvc.perform(get(PATH + "")
         	.accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
     }
@@ -145,7 +147,7 @@ public class SpecialtyRestControllerTests {
     	newSpecialty.setId(999);
     	ObjectMapper mapper = new ObjectMapper();
     	String newSpecialtyAsJSON = mapper.writeValueAsString(newSpecialty);
-    	this.mockMvc.perform(post("/api/specialties/")
+    	this.mockMvc.perform(post(PATH)
     		.content(newSpecialtyAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
     		.andExpect(status().isCreated());
     }
@@ -158,7 +160,7 @@ public class SpecialtyRestControllerTests {
     	newSpecialty.setName(null);
     	ObjectMapper mapper = new ObjectMapper();
     	String newSpecialtyAsJSON = mapper.writeValueAsString(newSpecialty);
-    	this.mockMvc.perform(post("/api/specialties/")
+    	this.mockMvc.perform(post(PATH + "")
         		.content(newSpecialtyAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
         		.andExpect(status().isBadRequest());
      }
@@ -171,12 +173,12 @@ public class SpecialtyRestControllerTests {
     	newSpecialty.setName("surgery I");
     	ObjectMapper mapper = new ObjectMapper();
     	String newSpecialtyAsJSON = mapper.writeValueAsString(newSpecialty);
-    	this.mockMvc.perform(put("/api/specialties/2")
+    	this.mockMvc.perform(put(PATH + "2")
     		.content(newSpecialtyAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
         	.andExpect(content().contentType("application/json"))
         	.andExpect(status().isNoContent());
 
-    	this.mockMvc.perform(get("/api/specialties/2")
+    	this.mockMvc.perform(get(PATH + "2")
            	.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
             .andExpect(content().contentType("application/json"))
@@ -191,7 +193,7 @@ public class SpecialtyRestControllerTests {
     	newSpecialty.setName("");
     	ObjectMapper mapper = new ObjectMapper();
     	String newSpecialtyAsJSON = mapper.writeValueAsString(newSpecialty);
-    	this.mockMvc.perform(put("/api/specialties/1")
+    	this.mockMvc.perform(put(PATH + "1")
     		.content(newSpecialtyAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
         	.andExpect(status().isBadRequest());
      }
@@ -203,7 +205,7 @@ public class SpecialtyRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newSpecialtyAsJSON = mapper.writeValueAsString(newSpecialty);
     	given(this.clinicService.findSpecialtyById(1)).willReturn(specialties.get(0));
-    	this.mockMvc.perform(delete("/api/specialties/1")
+    	this.mockMvc.perform(delete(PATH + "1")
     		.content(newSpecialtyAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
         	.andExpect(status().isNoContent());
     }
@@ -215,7 +217,7 @@ public class SpecialtyRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newSpecialtyAsJSON = mapper.writeValueAsString(newSpecialty);
     	given(this.clinicService.findSpecialtyById(-1)).willReturn(null);
-    	this.mockMvc.perform(delete("/api/specialties/-1")
+    	this.mockMvc.perform(delete(PATH + "-1")
     		.content(newSpecialtyAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
         	.andExpect(status().isNotFound());
     }

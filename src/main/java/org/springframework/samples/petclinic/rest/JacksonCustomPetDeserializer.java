@@ -17,7 +17,6 @@
 package org.springframework.samples.petclinic.rest;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,6 +34,7 @@ import java.util.Date;
  * @author Vitaliy Fedoriv
  */
 
+@SuppressWarnings("unused")
 public class JacksonCustomPetDeserializer extends StdDeserializer<Pet> {
 
     public JacksonCustomPetDeserializer() {
@@ -49,18 +49,17 @@ public class JacksonCustomPetDeserializer extends StdDeserializer<Pet> {
     public Pet deserialize(JsonParser parser, DeserializationContext context) throws IOException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
         Pet pet = new Pet();
-        Owner owner = new Owner();
-        PetType petType = new PetType();
         ObjectMapper mapper = new ObjectMapper();
         Date birthDate = null;
         JsonNode node = parser.getCodec().readTree(parser);
         JsonNode owner_node = node.get("owner");
         JsonNode type_node = node.get("type");
-        owner = mapper.treeToValue(owner_node, Owner.class);
-        petType = mapper.treeToValue(type_node, PetType.class);
+        Owner owner = mapper.treeToValue(owner_node, Owner.class);
+        PetType petType = mapper.treeToValue(type_node, PetType.class);
         int petId = node.get("id").asInt();
         String name = node.get("name").asText(null);
         String birthDateStr = node.get("birthDate").asText(null);
+
         try {
             birthDate = formatter.parse(birthDateStr);
         } catch (ParseException e) {
@@ -68,9 +67,9 @@ public class JacksonCustomPetDeserializer extends StdDeserializer<Pet> {
             throw new IOException(e);
         }
 
-        if (!(petId == 0)) {
+        if (!(petId == 0))
             pet.setId(petId);
-        }
+
         pet.setName(name);
         pet.setBirthDate(birthDate);
         pet.setOwner(owner);

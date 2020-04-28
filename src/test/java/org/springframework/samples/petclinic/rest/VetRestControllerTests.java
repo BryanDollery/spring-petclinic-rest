@@ -58,6 +58,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebAppConfiguration
 public class VetRestControllerTests {
 
+    public static final String PATH = "/vets/";
     @Autowired
     private VetRestController vetRestController;
 
@@ -99,7 +100,7 @@ public class VetRestControllerTests {
     @WithMockUser(roles="VET_ADMIN")
     public void testGetVetSuccess() throws Exception {
     	given(this.clinicService.findVetById(1)).willReturn(vets.get(0));
-        this.mockMvc.perform(get("/api/vets/1")
+        this.mockMvc.perform(get(PATH + "1")
         	.accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
             .andExpect(content().contentType("application/json"))
@@ -111,7 +112,7 @@ public class VetRestControllerTests {
     @WithMockUser(roles="VET_ADMIN")
     public void testGetVetNotFound() throws Exception {
     	given(this.clinicService.findVetById(-1)).willReturn(null);
-        this.mockMvc.perform(get("/api/vets/-1")
+        this.mockMvc.perform(get(PATH + "-1")
         	.accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
     }
@@ -120,7 +121,7 @@ public class VetRestControllerTests {
     @WithMockUser(roles="VET_ADMIN")
     public void testGetAllVetsSuccess() throws Exception {
     	given(this.clinicService.findAllVets()).willReturn(vets);
-        this.mockMvc.perform(get("/api/vets/")
+        this.mockMvc.perform(get(PATH)
         	.accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType("application/json"))
@@ -135,7 +136,7 @@ public class VetRestControllerTests {
     public void testGetAllVetsNotFound() throws Exception {
     	vets.clear();
     	given(this.clinicService.findAllVets()).willReturn(vets);
-        this.mockMvc.perform(get("/api/vets/")
+        this.mockMvc.perform(get(PATH)
         	.accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
     }
@@ -147,7 +148,7 @@ public class VetRestControllerTests {
     	newVet.setId(999);
     	ObjectMapper mapper = new ObjectMapper();
     	String newVetAsJSON = mapper.writeValueAsString(newVet);
-    	this.mockMvc.perform(post("/api/vets/")
+    	this.mockMvc.perform(post(PATH)
     		.content(newVetAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
     		.andExpect(status().isCreated());
     }
@@ -160,7 +161,7 @@ public class VetRestControllerTests {
     	newVet.setFirstName(null);
     	ObjectMapper mapper = new ObjectMapper();
     	String newVetAsJSON = mapper.writeValueAsString(newVet);
-    	this.mockMvc.perform(post("/api/vets/")
+    	this.mockMvc.perform(post(PATH)
         		.content(newVetAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
         		.andExpect(status().isBadRequest());
      }
@@ -173,12 +174,12 @@ public class VetRestControllerTests {
     	newVet.setFirstName("James");
     	ObjectMapper mapper = new ObjectMapper();
     	String newVetAsJSON = mapper.writeValueAsString(newVet);
-    	this.mockMvc.perform(put("/api/vets/1")
+    	this.mockMvc.perform(put(PATH + "1")
     		.content(newVetAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
         	.andExpect(content().contentType("application/json"))
         	.andExpect(status().isNoContent());
 
-    	this.mockMvc.perform(get("/api/vets/1")
+    	this.mockMvc.perform(get(PATH + "1")
            	.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
             .andExpect(content().contentType("application/json"))
@@ -194,7 +195,7 @@ public class VetRestControllerTests {
     	newVet.setFirstName("");
     	ObjectMapper mapper = new ObjectMapper();
     	String newVetAsJSON = mapper.writeValueAsString(newVet);
-    	this.mockMvc.perform(put("/api/vets/1")
+    	this.mockMvc.perform(put(PATH + "1")
     		.content(newVetAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
         	.andExpect(status().isBadRequest());
      }
@@ -206,7 +207,7 @@ public class VetRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newVetAsJSON = mapper.writeValueAsString(newVet);
     	given(this.clinicService.findVetById(1)).willReturn(vets.get(0));
-    	this.mockMvc.perform(delete("/api/vets/1")
+    	this.mockMvc.perform(delete(PATH + "1")
     		.content(newVetAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
         	.andExpect(status().isNoContent());
     }
@@ -218,7 +219,7 @@ public class VetRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newVetAsJSON = mapper.writeValueAsString(newVet);
     	given(this.clinicService.findVetById(-1)).willReturn(null);
-    	this.mockMvc.perform(delete("/api/vets/-1")
+    	this.mockMvc.perform(delete(PATH + "-1")
     		.content(newVetAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
         	.andExpect(status().isNotFound());
     }

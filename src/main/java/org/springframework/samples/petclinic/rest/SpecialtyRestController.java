@@ -18,17 +18,19 @@ package org.springframework.samples.petclinic.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -37,83 +39,88 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
+
 /**
  * @author Vitaliy Fedoriv
  */
 
 @RestController
 @CrossOrigin(exposedHeaders = "errors, content-type")
-@RequestMapping("api/specialties")
+@RequestMapping("specialties")
 public class SpecialtyRestController {
 
     @Autowired
     private ClinicService clinicService;
 
     @PreAuthorize("hasRole(@roles.VET_ADMIN)")
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping
     public ResponseEntity<Collection<Specialty>> getAllSpecialtys() {
-        Collection<Specialty> specialties = new ArrayList<Specialty>();
-        specialties.addAll(this.clinicService.findAllSpecialties());
+        Collection<Specialty> specialties = new ArrayList<>(this.clinicService.findAllSpecialties());
         if (specialties.isEmpty()) {
-            return new ResponseEntity<Collection<Specialty>>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(NOT_FOUND);
         }
-        return new ResponseEntity<Collection<Specialty>>(specialties, HttpStatus.OK);
+        return new ResponseEntity<>(specialties, OK);
     }
 
     @PreAuthorize("hasRole(@roles.VET_ADMIN)")
-    @RequestMapping(value = "/{specialtyId}", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(value = "/{specialtyId}")
     public ResponseEntity<Specialty> getSpecialty(@PathVariable("specialtyId") int specialtyId) {
         Specialty specialty = this.clinicService.findSpecialtyById(specialtyId);
         if (specialty == null) {
-            return new ResponseEntity<Specialty>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(NOT_FOUND);
         }
-        return new ResponseEntity<Specialty>(specialty, HttpStatus.OK);
+        return new ResponseEntity<>(specialty, OK);
     }
 
     @PreAuthorize("hasRole(@roles.VET_ADMIN)")
-    @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json")
+    @PostMapping
     public ResponseEntity<Specialty> addSpecialty(@RequestBody @Valid Specialty specialty, BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
         BindingErrorsResponse errors = new BindingErrorsResponse();
         HttpHeaders headers = new HttpHeaders();
         if (bindingResult.hasErrors() || (specialty == null)) {
             errors.addAllErrors(bindingResult);
             headers.add("errors", errors.toJSON());
-            return new ResponseEntity<Specialty>(headers, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(headers, BAD_REQUEST);
         }
         this.clinicService.saveSpecialty(specialty);
         headers.setLocation(ucBuilder.path("/api/specialtys/{id}").buildAndExpand(specialty.getId()).toUri());
-        return new ResponseEntity<Specialty>(specialty, headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(specialty, headers, CREATED);
     }
 
     @PreAuthorize("hasRole(@roles.VET_ADMIN)")
-    @RequestMapping(value = "/{specialtyId}", method = RequestMethod.PUT, produces = "application/json")
+    @PutMapping(value = "/{specialtyId}")
     public ResponseEntity<Specialty> updateSpecialty(@PathVariable("specialtyId") int specialtyId, @RequestBody @Valid Specialty specialty, BindingResult bindingResult) {
         BindingErrorsResponse errors = new BindingErrorsResponse();
         HttpHeaders headers = new HttpHeaders();
         if (bindingResult.hasErrors() || (specialty == null)) {
             errors.addAllErrors(bindingResult);
             headers.add("errors", errors.toJSON());
-            return new ResponseEntity<Specialty>(headers, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(headers, BAD_REQUEST);
         }
         Specialty currentSpecialty = this.clinicService.findSpecialtyById(specialtyId);
         if (currentSpecialty == null) {
-            return new ResponseEntity<Specialty>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(NOT_FOUND);
         }
         currentSpecialty.setName(specialty.getName());
         this.clinicService.saveSpecialty(currentSpecialty);
-        return new ResponseEntity<Specialty>(currentSpecialty, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(currentSpecialty, NO_CONTENT);
     }
 
     @PreAuthorize("hasRole(@roles.VET_ADMIN)")
-    @RequestMapping(value = "/{specialtyId}", method = RequestMethod.DELETE, produces = "application/json")
+    @DeleteMapping(value = "/{specialtyId}")
     @Transactional
     public ResponseEntity<Void> deleteSpecialty(@PathVariable("specialtyId") int specialtyId) {
         Specialty specialty = this.clinicService.findSpecialtyById(specialtyId);
         if (specialty == null) {
-            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(NOT_FOUND);
         }
         this.clinicService.deleteSpecialty(specialty);
-        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(NO_CONTENT);
     }
 
 }

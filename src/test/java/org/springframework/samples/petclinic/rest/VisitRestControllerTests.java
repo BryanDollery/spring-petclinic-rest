@@ -17,6 +17,7 @@
 package org.springframework.samples.petclinic.rest;
 
 import static org.mockito.BDDMockito.given;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -63,6 +64,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebAppConfiguration
 public class VisitRestControllerTests {
 
+    public static final String PATH = "/visits/";
     @Autowired
     private VisitRestController visitRestController;
 
@@ -122,7 +124,7 @@ public class VisitRestControllerTests {
     @WithMockUser(roles="OWNER_ADMIN")
     public void testGetVisitSuccess() throws Exception {
     	given(this.clinicService.findVisitById(2)).willReturn(visits.get(0));
-        this.mockMvc.perform(get("/api/visits/2")
+        this.mockMvc.perform(get("/visits/2")
         	.accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
             .andExpect(content().contentType("application/json"))
@@ -134,8 +136,8 @@ public class VisitRestControllerTests {
     @WithMockUser(roles="OWNER_ADMIN")
     public void testGetVisitNotFound() throws Exception {
     	given(this.clinicService.findVisitById(-1)).willReturn(null);
-        this.mockMvc.perform(get("/api/visits/-1")
-        	.accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get("/visits/-1")
+        	.accept(APPLICATION_JSON))
             .andExpect(status().isNotFound());
     }
 
@@ -143,8 +145,8 @@ public class VisitRestControllerTests {
     @WithMockUser(roles="OWNER_ADMIN")
     public void testGetAllVisitsSuccess() throws Exception {
     	given(this.clinicService.findAllVisits()).willReturn(visits);
-        this.mockMvc.perform(get("/api/visits/")
-        	.accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get(PATH)
+        	.accept(APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType("application/json"))
         	.andExpect(jsonPath("$.[0].id").value(2))
@@ -158,8 +160,8 @@ public class VisitRestControllerTests {
     public void testGetAllVisitsNotFound() throws Exception {
     	visits.clear();
     	given(this.clinicService.findAllVisits()).willReturn(visits);
-        this.mockMvc.perform(get("/api/visits/")
-        	.accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get(PATH)
+        	.accept(APPLICATION_JSON))
             .andExpect(status().isNotFound());
     }
 
@@ -171,7 +173,7 @@ public class VisitRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newVisitAsJSON = mapper.writeValueAsString(newVisit);
     	System.out.println("newVisitAsJSON " + newVisitAsJSON);
-    	this.mockMvc.perform(post("/api/visits/")
+    	this.mockMvc.perform(post(PATH)
     		.content(newVisitAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
     		.andExpect(status().isCreated());
     }
@@ -184,7 +186,7 @@ public class VisitRestControllerTests {
     	newVisit.setPet(null);
     	ObjectMapper mapper = new ObjectMapper();
     	String newVisitAsJSON = mapper.writeValueAsString(newVisit);
-    	this.mockMvc.perform(post("/api/visits/")
+    	this.mockMvc.perform(post(PATH)
         		.content(newVisitAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
         		.andExpect(status().isBadRequest());
      }
@@ -197,13 +199,13 @@ public class VisitRestControllerTests {
     	newVisit.setDescription("rabies shot test");
     	ObjectMapper mapper = new ObjectMapper();
     	String newVisitAsJSON = mapper.writeValueAsString(newVisit);
-    	this.mockMvc.perform(put("/api/visits/2")
+    	this.mockMvc.perform(put("/visits/2")
     		.content(newVisitAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
         	.andExpect(content().contentType("application/json"))
         	.andExpect(status().isNoContent());
 
-    	this.mockMvc.perform(get("/api/visits/2")
-           	.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON_VALUE))
+    	this.mockMvc.perform(get("/visits/2")
+           	.accept(APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
             .andExpect(content().contentType("application/json"))
             .andExpect(jsonPath("$.id").value(2))
@@ -217,7 +219,7 @@ public class VisitRestControllerTests {
     	newVisit.setPet(null);
     	ObjectMapper mapper = new ObjectMapper();
     	String newVisitAsJSON = mapper.writeValueAsString(newVisit);
-    	this.mockMvc.perform(put("/api/visits/2")
+    	this.mockMvc.perform(put("/visits/2")
     		.content(newVisitAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
         	.andExpect(status().isBadRequest());
      }
@@ -229,7 +231,7 @@ public class VisitRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newVisitAsJSON = mapper.writeValueAsString(newVisit);
     	given(this.clinicService.findVisitById(2)).willReturn(visits.get(0));
-    	this.mockMvc.perform(delete("/api/visits/2")
+    	this.mockMvc.perform(delete("/visits/2")
     		.content(newVisitAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
         	.andExpect(status().isNoContent());
     }
@@ -241,7 +243,7 @@ public class VisitRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newVisitAsJSON = mapper.writeValueAsString(newVisit);
     	given(this.clinicService.findVisitById(-1)).willReturn(null);
-    	this.mockMvc.perform(delete("/api/visits/-1")
+    	this.mockMvc.perform(delete("/visits/-1")
     		.content(newVisitAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
         	.andExpect(status().isNotFound());
     }
