@@ -40,12 +40,8 @@ import java.util.Collection;
 /**
  * Mostly used as a facade for all Petclinic controllers
  * Also a placeholder for @Transactional and @Cacheable annotations
- *
- * @author Michael Isvy
- * @author Bryan Dollery
  */
 @Service
-
 public class ClinicServiceImpl implements ClinicService {
 
     private final PetRepository petRepository;

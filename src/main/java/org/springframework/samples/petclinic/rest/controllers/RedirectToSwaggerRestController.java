@@ -14,28 +14,26 @@
  * limitations under the License.
  */
 
-package org.springframework.samples.petclinic.rest;
+package org.springframework.samples.petclinic.rest.controllers;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * @author Bryan Dollery
- */
-
 @RestController
 @CrossOrigin(exposedHeaders = "errors, content-type")
-@RequestMapping("/")
 public class RedirectToSwaggerRestController {
 
-    public static final String SWAGGER_ENDPOINT = "/petclinic/api/swagger-ui.html";
-
-    public void redirectToSwagger(HttpServletResponse response) throws IOException {
-        response.sendRedirect(SWAGGER_ENDPOINT);
+    @RequestMapping({"", "/", "/swagger", "/swagger-ui.htm", "/swagger-ui"})
+    public void redirectToSwagger(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.out.println("Wibble");
+        response.addCookie(new Cookie("redirecting_from", request.getServletPath()));
+        response.sendRedirect("/petclinic/api/swagger-ui.html");
     }
 }
 

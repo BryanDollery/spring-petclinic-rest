@@ -21,10 +21,6 @@ import org.springframework.samples.petclinic.model.PetType;
 
 import java.util.Collection;
 
-/**
- * @author Bryan Dollery
- */
-
 public interface PetTypeRepository {
 
     PetType findById(int id) throws DataAccessException;

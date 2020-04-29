@@ -16,13 +16,14 @@
 package org.springframework.samples.petclinic.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.core.style.ToStringCreator;
-import org.springframework.samples.petclinic.rest.JacksonCustomOwnerDeserializer;
-import org.springframework.samples.petclinic.rest.JacksonCustomOwnerSerializer;
+import org.springframework.samples.petclinic.rest.serialisers.JacksonCustomOwnerDeserializer;
+import org.springframework.samples.petclinic.rest.serialisers.JacksonCustomOwnerSerializer;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -38,13 +39,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
+
 /**
  * Simple JavaBean domain object representing an owner.
- *
- * @author Ken Krebs
- * @author Juergen Hoeller
- * @author Sam Brannen
- * @author Michael Isvy
  */
 @Entity
 @Table(name = "owners")
@@ -53,20 +52,23 @@ import java.util.Set;
 public class Owner extends Person {
     @Column(name = "address")
     @NotEmpty
+    @JsonProperty
     private String address;
 
     @Column(name = "city")
     @NotEmpty
+    @JsonProperty
     private String city;
 
     @Column(name = "telephone")
     @NotEmpty
     @Digits(fraction = 0, integer = 10)
+    @JsonProperty
     private String telephone;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner", fetch = FetchType.EAGER)
+    @OneToMany(cascade = ALL, mappedBy = "owner", fetch = EAGER)
+    @JsonProperty
     private Set<Pet> pets;
-
 
     public String getAddress() {
         return this.address;

@@ -16,13 +16,14 @@
 package org.springframework.samples.petclinic.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.samples.petclinic.rest.JacksonCustomPetDeserializer;
-import org.springframework.samples.petclinic.rest.JacksonCustomPetSerializer;
+import org.springframework.samples.petclinic.rest.serialisers.JacksonCustomPetDeserializer;
+import org.springframework.samples.petclinic.rest.serialisers.JacksonCustomPetSerializer;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -41,12 +42,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.TemporalType.DATE;
+
 /**
  * Simple business object representing a pet.
- *
- * @author Ken Krebs
- * @author Juergen Hoeller
- * @author Sam Brannen
  */
 @Entity
 @Table(name = "pets")
@@ -55,19 +56,23 @@ import java.util.Set;
 public class Pet extends NamedEntity {
 
     @Column(name = "birth_date")
-    @Temporal(TemporalType.DATE)
+    @Temporal(DATE)
     @DateTimeFormat(pattern = "yyyy/MM/dd")
+    @JsonProperty
     private Date birthDate;
 
     @ManyToOne
     @JoinColumn(name = "type_id")
+    @JsonProperty
     private PetType type;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
+    @JsonProperty
     private Owner owner;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
+    @OneToMany(cascade = ALL, mappedBy = "pet", fetch = EAGER)
+    @JsonProperty
     private Set<Visit> visits;
 
     public Date getBirthDate() {

@@ -23,8 +23,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 /**
  * <p> Integration test using the jdbc profile.
  *
- * @author Thomas Risberg
- * @author Michael Isvy
  * @see AbstractClinicServiceTests AbstractClinicServiceTests for more details. </p>
  */
 @SpringBootTest

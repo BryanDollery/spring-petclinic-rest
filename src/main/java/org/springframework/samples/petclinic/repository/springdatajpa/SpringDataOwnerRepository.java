@@ -26,7 +26,6 @@ import java.util.Collection;
 /**
  * Spring Data JPA specialization of the {@link OwnerRepository} interface
  *
- * @author Michael Isvy
  * @since 15.1.2013
  */
 

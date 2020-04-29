@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.samples.petclinic.rest;
+package org.springframework.samples.petclinic.rest.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Vet;
+import org.springframework.samples.petclinic.rest.errors.BindingErrorsResponse;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -45,17 +46,16 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
-/**
- * @author Bryan Dollery
- */
-
 @RestController
 @CrossOrigin(exposedHeaders = "errors, content-type")
 @RequestMapping("vets")
 public class VetRestController {
 
-    @Autowired
-    private ClinicService clinicService;
+    private final ClinicService clinicService;
+
+    public VetRestController(ClinicService clinicService) {
+        this.clinicService = clinicService;
+    }
 
     @PreAuthorize("hasRole(@roles.VET_ADMIN)")
     @GetMapping

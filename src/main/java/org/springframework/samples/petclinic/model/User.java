@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,12 +13,16 @@ import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
+
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
     @Column(name = "username")
+    @JsonProperty
     private String username;
 
     @Column(name = "password")
@@ -26,7 +31,7 @@ public class User {
     @Column(name = "enabled")
     private Boolean enabled;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(cascade = ALL, mappedBy = "user", fetch = EAGER)
     private Set<Role> roles;
 
     public String getUsername() {

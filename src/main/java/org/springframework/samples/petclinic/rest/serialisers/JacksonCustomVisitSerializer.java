@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.samples.petclinic.rest;
+package org.springframework.samples.petclinic.rest.serialisers;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -27,10 +27,6 @@ import org.springframework.samples.petclinic.model.Visit;
 import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-
-/**
- * @author Bryan Dollery
- */
 
 @SuppressWarnings("unused")
 public class JacksonCustomVisitSerializer extends StdSerializer<Visit> {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.samples.petclinic.rest;
+package org.springframework.samples.petclinic.rest.errors;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -25,10 +25,6 @@ import org.springframework.validation.FieldError;
 
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * @author Bryan Dollery
- */
 
 public class BindingErrorsResponse {
 

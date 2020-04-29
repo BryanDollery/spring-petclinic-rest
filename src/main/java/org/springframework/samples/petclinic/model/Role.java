@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,10 +16,10 @@ public class Role extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "username")
-    @JsonIgnore
     private User user;
 
     @Column(name = "role")
+    @JsonProperty
     private String name;
 
     public User getUser() {

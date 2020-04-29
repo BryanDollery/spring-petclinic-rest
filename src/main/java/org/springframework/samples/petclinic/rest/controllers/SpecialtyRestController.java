@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.springframework.samples.petclinic.rest;
+package org.springframework.samples.petclinic.rest.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.samples.petclinic.model.Pet;
-import org.springframework.samples.petclinic.model.PetType;
+import org.springframework.samples.petclinic.model.Specialty;
+import org.springframework.samples.petclinic.rest.errors.BindingErrorsResponse;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -37,6 +37,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -45,97 +46,78 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
-/**
- * @author Bryan Dollery
- */
-
 @RestController
 @CrossOrigin(exposedHeaders = "errors, content-type")
-@RequestMapping("pets")
-public class PetRestController {
+@RequestMapping("specialties")
+public class SpecialtyRestController {
 
     @Autowired
     private ClinicService clinicService;
 
-    @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
+    @PreAuthorize("hasRole(@roles.VET_ADMIN)")
     @GetMapping
-    public ResponseEntity<Collection<Pet>> getPets() {
-        Collection<Pet> pets = this.clinicService.findAllPets();
-        if (pets.isEmpty()) {
+    public ResponseEntity<Collection<Specialty>> getAllSpecialtys() {
+        Collection<Specialty> specialties = new ArrayList<>(this.clinicService.findAllSpecialties());
+        if (specialties.isEmpty()) {
             return new ResponseEntity<>(NOT_FOUND);
         }
-        return new ResponseEntity<>(pets, OK);
+        return new ResponseEntity<>(specialties, OK);
     }
 
-    @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
-    @GetMapping(value = "/{petId}")
-    public ResponseEntity<Pet> getPet(@PathVariable("petId") int petId) {
-        Pet pet = this.clinicService.findPetById(petId);
-        if (pet == null) {
+    @PreAuthorize("hasRole(@roles.VET_ADMIN)")
+    @GetMapping(value = "/{specialtyId}")
+    public ResponseEntity<Specialty> getSpecialty(@PathVariable("specialtyId") int specialtyId) {
+        Specialty specialty = this.clinicService.findSpecialtyById(specialtyId);
+        if (specialty == null) {
             return new ResponseEntity<>(NOT_FOUND);
         }
-        return new ResponseEntity<>(pet, OK);
+        return new ResponseEntity<>(specialty, OK);
     }
 
-    @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
-    @GetMapping(value = "/pettypes")
-    public ResponseEntity<Collection<PetType>> getPetTypes() {
-        return new ResponseEntity<>(this.clinicService.findPetTypes(), OK);
-    }
-
-    @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
+    @PreAuthorize("hasRole(@roles.VET_ADMIN)")
     @PostMapping
-    @Transactional
-    public ResponseEntity<Pet> addPet(@RequestBody @Valid Pet pet, BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<Specialty> addSpecialty(@RequestBody @Valid Specialty specialty, BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
         BindingErrorsResponse errors = new BindingErrorsResponse();
         HttpHeaders headers = new HttpHeaders();
-        if (bindingResult.hasErrors() || (pet == null)) {
+        if (bindingResult.hasErrors() || (specialty == null)) {
             errors.addAllErrors(bindingResult);
             headers.add("errors", errors.toJSON());
             return new ResponseEntity<>(headers, BAD_REQUEST);
         }
-        this.clinicService.savePet(pet);
-        headers.setLocation(ucBuilder.path("/api/pets/{id}").buildAndExpand(pet.getId()).toUri());
-        return new ResponseEntity<>(pet, headers, CREATED);
+        this.clinicService.saveSpecialty(specialty);
+        headers.setLocation(ucBuilder.path("/api/specialtys/{id}").buildAndExpand(specialty.getId()).toUri());
+        return new ResponseEntity<>(specialty, headers, CREATED);
     }
 
-    @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
-    @PutMapping(value = "/{petId}")
-    @Transactional
-    public ResponseEntity<Pet> updatePet(@PathVariable("petId") int petId, @RequestBody @Valid Pet pet, BindingResult bindingResult) {
+    @PreAuthorize("hasRole(@roles.VET_ADMIN)")
+    @PutMapping(value = "/{specialtyId}")
+    public ResponseEntity<Specialty> updateSpecialty(@PathVariable("specialtyId") int specialtyId, @RequestBody @Valid Specialty specialty, BindingResult bindingResult) {
         BindingErrorsResponse errors = new BindingErrorsResponse();
         HttpHeaders headers = new HttpHeaders();
-
-        if (bindingResult.hasErrors() || (pet == null)) {
+        if (bindingResult.hasErrors() || (specialty == null)) {
             errors.addAllErrors(bindingResult);
             headers.add("errors", errors.toJSON());
             return new ResponseEntity<>(headers, BAD_REQUEST);
         }
-
-        Pet currentPet = this.clinicService.findPetById(petId);
-
-        if (currentPet == null)
-            return new ResponseEntity<>(NOT_FOUND);
-
-        currentPet.setBirthDate(pet.getBirthDate());
-        currentPet.setName(pet.getName());
-        currentPet.setType(pet.getType());
-        currentPet.setOwner(pet.getOwner());
-        this.clinicService.savePet(currentPet);
-        return new ResponseEntity<>(currentPet, NO_CONTENT);
-    }
-
-    @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
-    @DeleteMapping(value = "/{petId}")
-    @Transactional
-    public ResponseEntity<Void> deletePet(@PathVariable("petId") int petId) {
-        Pet pet = this.clinicService.findPetById(petId);
-        if (pet == null) {
+        Specialty currentSpecialty = this.clinicService.findSpecialtyById(specialtyId);
+        if (currentSpecialty == null) {
             return new ResponseEntity<>(NOT_FOUND);
         }
-        this.clinicService.deletePet(pet);
+        currentSpecialty.setName(specialty.getName());
+        this.clinicService.saveSpecialty(currentSpecialty);
+        return new ResponseEntity<>(currentSpecialty, NO_CONTENT);
+    }
+
+    @PreAuthorize("hasRole(@roles.VET_ADMIN)")
+    @DeleteMapping(value = "/{specialtyId}")
+    @Transactional
+    public ResponseEntity<Void> deleteSpecialty(@PathVariable("specialtyId") int specialtyId) {
+        Specialty specialty = this.clinicService.findSpecialtyById(specialtyId);
+        if (specialty == null) {
+            return new ResponseEntity<>(NOT_FOUND);
+        }
+        this.clinicService.deleteSpecialty(specialty);
         return new ResponseEntity<>(NO_CONTENT);
     }
-
 
 }

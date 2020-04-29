@@ -21,10 +21,6 @@ import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.repository.SpecialtyRepository;
 
 
-/**
- * @author Bryan Dollery
- */
-
 public interface SpringDataSpecialtyRepository extends SpecialtyRepository, Repository<Specialty, Integer>, SpecialtyRepositoryOverride {
 
 }

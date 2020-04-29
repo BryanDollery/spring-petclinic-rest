@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.samples.petclinic.rest;
+package org.springframework.samples.petclinic.rest.serialisers;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -27,10 +27,6 @@ import org.springframework.samples.petclinic.model.Visit;
 import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-
-/**
- * @author Bryan Dollery
- */
 
 @SuppressWarnings("unused")
 public class JacksonCustomOwnerSerializer extends StdSerializer<Owner> {
@@ -62,11 +58,12 @@ public class JacksonCustomOwnerSerializer extends StdSerializer<Owner> {
         json.writeArrayFieldStart("pets");
         for (Pet pet : owner.getPets()) {
             json.writeStartObject(); // pet
-            if (pet.getId() == null) {
+
+            if (pet.getId() == null)
                 json.writeNullField("id");
-            } else {
+            else
                 json.writeNumberField("id", pet.getId());
-            }
+
             json.writeStringField("name", pet.getName());
             json.writeStringField("birthDate", formatter.format(pet.getBirthDate()));
 
@@ -76,28 +73,31 @@ public class JacksonCustomOwnerSerializer extends StdSerializer<Owner> {
             json.writeStringField("name", petType.getName());
             json.writeEndObject(); // type
 
-            if (pet.getOwner().getId() == null) {
+            if (pet.getOwner().getId() == null)
                 json.writeNullField("owner");
-            } else {
+            else
                 json.writeNumberField("owner", pet.getOwner().getId());
-            }
+
             // write visits array
             json.writeArrayFieldStart("visits");
             for (Visit visit : pet.getVisits()) {
                 json.writeStartObject(); // visit
-                if (visit.getId() == null) {
+
+                if (visit.getId() == null)
                     json.writeNullField("id");
-                } else {
+                else
                     json.writeNumberField("id", visit.getId());
-                }
+
                 json.writeStringField("date", formatter.format(visit.getDate()));
                 json.writeStringField("description", visit.getDescription());
                 json.writeNumberField("pet", visit.getPet().getId());
                 json.writeEndObject(); // visit
             }
+
             json.writeEndArray(); // visits
             json.writeEndObject(); // pet
         }
+
         json.writeEndArray(); // pets
         json.writeEndObject(); // owner
     }

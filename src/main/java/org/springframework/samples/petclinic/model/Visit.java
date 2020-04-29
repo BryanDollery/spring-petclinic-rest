@@ -16,11 +16,12 @@
 package org.springframework.samples.petclinic.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.samples.petclinic.rest.JacksonCustomVisitDeserializer;
-import org.springframework.samples.petclinic.rest.JacksonCustomVisitSerializer;
+import org.springframework.samples.petclinic.rest.serialisers.JacksonCustomVisitDeserializer;
+import org.springframework.samples.petclinic.rest.serialisers.JacksonCustomVisitSerializer;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,8 +35,6 @@ import java.util.Date;
 
 /**
  * Simple JavaBean domain object representing a visit.
- *
- * @author Ken Krebs
  */
 @Entity
 @Table(name = "visits")
@@ -50,6 +49,7 @@ public class Visit extends BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy/MM/dd")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
+    @JsonProperty
     private Date date;
 
     /**
@@ -57,6 +57,7 @@ public class Visit extends BaseEntity {
      */
     @NotEmpty
     @Column(name = "description")
+    @JsonProperty
     private String description;
 
     /**
@@ -64,6 +65,7 @@ public class Visit extends BaseEntity {
      */
     @ManyToOne
     @JoinColumn(name = "pet_id")
+    @JsonProperty
     private Pet pet;
 
 

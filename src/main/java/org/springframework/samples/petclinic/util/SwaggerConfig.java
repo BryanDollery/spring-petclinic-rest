@@ -16,7 +16,6 @@
 
 package org.springframework.samples.petclinic.util;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -37,7 +36,7 @@ import java.util.Collections;
 @Configuration
 @EnableSwagger2
 @ComponentScan(basePackages = "org.springframework.samples.petclinic.rest")
-public class ApplicationSwaggerConfig {
+public class SwaggerConfig {
 
     @Bean
     public Docket customDocket() {
@@ -53,7 +52,7 @@ public class ApplicationSwaggerConfig {
         return new ApiInfo(
             "REST Petclinic backend Api Documentation",
             "This is REST API documentation of the Spring Petclinic backend. If authentication is enabled, when calling the APIs use admin/admin",
-            "1.0",
+            "2.3.0",
             "Petclinic backend terms of service",
             new Contact(
                 "Bryan Dollery",
@@ -62,6 +61,4 @@ public class ApplicationSwaggerConfig {
             "Apache 2.0",
             "http://www.apache.org/licenses/LICENSE-2.0", Collections.emptyList());
     }
-
-
 }

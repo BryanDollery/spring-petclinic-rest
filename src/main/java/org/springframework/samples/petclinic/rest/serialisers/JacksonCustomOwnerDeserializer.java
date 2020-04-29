@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.samples.petclinic.rest;
+package org.springframework.samples.petclinic.rest.serialisers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -23,10 +23,6 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.springframework.samples.petclinic.model.Owner;
 
 import java.io.IOException;
-
-/**
- * @author Bryan Dollery
- */
 
 @SuppressWarnings("unused")
 public class JacksonCustomOwnerDeserializer extends StdDeserializer<Owner> {

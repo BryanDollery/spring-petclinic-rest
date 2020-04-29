@@ -18,10 +18,6 @@ package org.springframework.samples.petclinic.repository.springdatajpa;
 
 import org.springframework.samples.petclinic.model.Specialty;
 
-/**
- * @author Bryan Dollery
- */
-
 public interface SpecialtyRepositoryOverride {
 
     void delete(Specialty specialty);

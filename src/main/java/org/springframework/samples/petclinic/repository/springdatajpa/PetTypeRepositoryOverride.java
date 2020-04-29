@@ -18,10 +18,6 @@ package org.springframework.samples.petclinic.repository.springdatajpa;
 
 import org.springframework.samples.petclinic.model.PetType;
 
-/**
- * @author Bryan Dollery
- */
-
 public interface PetTypeRepositoryOverride {
 
     void delete(PetType petType);

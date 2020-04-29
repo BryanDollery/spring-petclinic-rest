@@ -21,10 +21,6 @@ import org.springframework.samples.petclinic.model.Pet;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-/**
- * @author Bryan Dollery
- */
-
 public class SpringDataPetRepositoryImpl implements PetRepositoryOverride {
 
     @PersistenceContext

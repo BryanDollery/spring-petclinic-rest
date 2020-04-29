@@ -25,8 +25,6 @@ import java.util.Collection;
  * Utility methods for handling entities. Separate from the BaseEntity class mainly because of dependency on the
  * ORM-associated ObjectRetrievalFailureException.
  *
- * @author Juergen Hoeller
- * @author Sam Brannen
  * @see org.springframework.samples.petclinic.model.BaseEntity
  * @since 29.10.2003
  */

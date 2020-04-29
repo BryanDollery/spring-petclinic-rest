@@ -28,9 +28,6 @@ import java.util.Collection;
 
 /**
  * Mostly used as a facade so all controllers have a single point of entry
- *
- * @author Michael Isvy
- * @author Bryan Dollery
  */
 public interface ClinicService {
 

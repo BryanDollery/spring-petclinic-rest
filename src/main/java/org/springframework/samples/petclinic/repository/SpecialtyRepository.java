@@ -21,10 +21,6 @@ import org.springframework.samples.petclinic.model.Specialty;
 
 import java.util.Collection;
 
-/**
- * @author Bryan Dollery
- */
-
 public interface SpecialtyRepository {
 
     Specialty findById(int id) throws DataAccessException;

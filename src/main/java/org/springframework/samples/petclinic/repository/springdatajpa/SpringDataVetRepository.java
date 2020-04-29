@@ -22,7 +22,6 @@ import org.springframework.samples.petclinic.repository.VetRepository;
 /**
  * Spring Data JPA specialization of the {@link VetRepository} interface
  *
- * @author Michael Isvy
  * @since 15.1.2013
  */
 

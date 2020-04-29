@@ -24,10 +24,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-/**
- * @author Bryan Dollery
- */
-
 public class SpringDataPetTypeRepositoryImpl implements PetTypeRepositoryOverride {
 
     @PersistenceContext

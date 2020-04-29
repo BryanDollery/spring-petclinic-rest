@@ -22,10 +22,6 @@ import org.springframework.samples.petclinic.model.Visit;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-/**
- * @author Bryan Dollery
- */
-
 public class SpringDataVisitRepositoryImpl implements VisitRepositoryOverride {
 
     @PersistenceContext

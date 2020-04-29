@@ -21,10 +21,6 @@ import org.springframework.samples.petclinic.model.Specialty;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-/**
- * @author Bryan Dollery
- */
-
 public class SpringDataSpecialtyRepositoryImpl implements SpecialtyRepositoryOverride {
 
     @PersistenceContext
