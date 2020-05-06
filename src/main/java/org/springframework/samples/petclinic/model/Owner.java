@@ -25,10 +25,8 @@ import org.springframework.core.style.ToStringCreator;
 import org.springframework.samples.petclinic.rest.serialisers.JacksonCustomOwnerDeserializer;
 import org.springframework.samples.petclinic.rest.serialisers.JacksonCustomOwnerSerializer;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;

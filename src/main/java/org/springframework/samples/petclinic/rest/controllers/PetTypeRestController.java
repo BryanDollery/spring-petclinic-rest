@@ -58,9 +58,12 @@ public class PetTypeRestController {
     @GetMapping
     public ResponseEntity<Collection<PetType>> getAllPetTypes() {
         Collection<PetType> petTypes = new ArrayList<>(this.clinicService.findAllPetTypes());
-        if (petTypes.isEmpty()) {
-            return new ResponseEntity<>(NOT_FOUND);
-        }
+        if (petTypes.isEmpty()) return new ResponseEntity<>(NOT_FOUND);
+
+        for (PetType petType : petTypes)
+            petType.decode();
+
+
         return new ResponseEntity<>(petTypes, OK);
     }
 
@@ -68,15 +71,17 @@ public class PetTypeRestController {
     @GetMapping(value = "/{petTypeId}")
     public ResponseEntity<PetType> getPetType(@PathVariable("petTypeId") int petTypeId) {
         PetType petType = this.clinicService.findPetTypeById(petTypeId);
-        if (petType == null) {
-            return new ResponseEntity<>(NOT_FOUND);
-        }
-        return new ResponseEntity<>(petType, OK);
+        if (petType == null) return new ResponseEntity<>(NOT_FOUND);
+
+        return new ResponseEntity<>(petType.decode(), OK);
     }
 
     @PreAuthorize("hasRole(@roles.VET_ADMIN)")
     @PostMapping
     public ResponseEntity<PetType> addPetType(@RequestBody @Valid PetType petType, BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
+
+
+
         BindingErrorsResponse errors = new BindingErrorsResponse();
         HttpHeaders headers = new HttpHeaders();
         if (bindingResult.hasErrors() || (petType == null)) {
@@ -104,8 +109,9 @@ public class PetTypeRestController {
             return new ResponseEntity<>(NOT_FOUND);
         }
         currentPetType.setName(petType.getName());
+        currentPetType.encode();
         this.clinicService.savePetType(currentPetType);
-        return new ResponseEntity<>(currentPetType, NO_CONTENT);
+        return new ResponseEntity<>(currentPetType.decode(), NO_CONTENT);
     }
 
     @PreAuthorize("hasRole(@roles.VET_ADMIN)")
@@ -119,5 +125,6 @@ public class PetTypeRestController {
         this.clinicService.deletePetType(petType);
         return new ResponseEntity<>(NO_CONTENT);
     }
+
 
 }
