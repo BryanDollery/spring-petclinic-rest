@@ -19,6 +19,7 @@ package org.springframework.samples.petclinic.rest.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.rest.errors.BindingErrorsResponse;
@@ -83,7 +84,7 @@ public class PetRestController {
     @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
     @PostMapping
     @Transactional
-    public ResponseEntity<Pet> addPet(@RequestBody @Valid Pet pet, BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<Pet> addPet(@RequestBody @Valid PetInOut pet, BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
         BindingErrorsResponse errors = new BindingErrorsResponse();
         HttpHeaders headers = new HttpHeaders();
         if (bindingResult.hasErrors() || (pet == null)) {
@@ -91,9 +92,16 @@ public class PetRestController {
             headers.add("errors", errors.toJSON());
             return new ResponseEntity<>(headers, BAD_REQUEST);
         }
-        this.clinicService.savePet(pet);
-        headers.setLocation(ucBuilder.path("/api/pets/{id}").buildAndExpand(pet.getId()).toUri());
-        return new ResponseEntity<>(pet, headers, CREATED);
+
+        Pet petEntity = new Pet();
+        petEntity.setBirthDate(pet.getBirthDate());
+        final Owner owner = clinicService.findOwnerById(pet.getOwner().getId());
+        petEntity.setOwner(owner);
+        final PetType petType = clinicService.findPetTypeById(pet.getType().getId());
+        petEntity.setType(petType);
+        this.clinicService.savePet(petEntity);
+        headers.setLocation(ucBuilder.path("/api/pets/{id}").buildAndExpand(petEntity.getId()).toUri());
+        return new ResponseEntity<>(petEntity, headers, CREATED);
     }
 
     @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
