@@ -104,6 +104,11 @@ public class Pet extends NamedEntity {
         return this.visits;
     }
 
+    public void initVisits() {
+        if (this.visits == null)
+            this.visits = new HashSet<>();
+    }
+
     protected void setVisitsInternal(Set<Visit> visits) {
         this.visits = visits;
     }

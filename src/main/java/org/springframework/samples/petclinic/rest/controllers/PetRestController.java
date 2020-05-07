@@ -84,21 +84,21 @@ public class PetRestController {
     @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
     @PostMapping
     @Transactional
-    public ResponseEntity<Pet> addPet(@RequestBody @Valid PetInOut pet, BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
-        BindingErrorsResponse errors = new BindingErrorsResponse();
-        HttpHeaders headers = new HttpHeaders();
+    public ResponseEntity<Pet> addPet(@RequestBody PetInOut pet, BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
+        final HttpHeaders headers = new HttpHeaders();
+        final BindingErrorsResponse errors = new BindingErrorsResponse();
+
         if (bindingResult.hasErrors() || (pet == null)) {
             errors.addAllErrors(bindingResult);
             headers.add("errors", errors.toJSON());
             return new ResponseEntity<>(headers, BAD_REQUEST);
         }
 
-        Pet petEntity = new Pet();
+        final Pet petEntity = new Pet();
         petEntity.setBirthDate(pet.getBirthDate());
-        final Owner owner = clinicService.findOwnerById(pet.getOwner().getId());
-        petEntity.setOwner(owner);
-        final PetType petType = clinicService.findPetTypeById(pet.getType().getId());
-        petEntity.setType(petType);
+        petEntity.setOwner(clinicService.findOwnerById(pet.getOwner().getId()));
+        petEntity.setType(clinicService.findPetTypeById(pet.getType().getId()));
+        petEntity.initVisits();
         this.clinicService.savePet(petEntity);
         headers.setLocation(ucBuilder.path("/api/pets/{id}").buildAndExpand(petEntity.getId()).toUri());
         return new ResponseEntity<>(petEntity, headers, CREATED);

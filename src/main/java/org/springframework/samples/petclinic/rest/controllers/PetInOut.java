@@ -6,57 +6,19 @@ import java.util.Date;
 
 public class PetInOut {
 
-    class Owner {
-        private int id;
-
-        public Owner() {
-        }
-
-        public Owner(int id) {
-            this.id = id;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-    }
-
-    class Type {
-        private int id;
-
-        public Type() {
-        }
-
-        public Type(int id) {
-            this.id = id;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-    }
-
     @JsonProperty
     private Date birthDate;
     @JsonProperty
     private String name;
     @JsonProperty
-    private Owner owner;
+    private PetIOOwner owner;
     @JsonProperty
-    private Type type;
+    private PetIOType type;
 
     public PetInOut() {
     }
 
-    public PetInOut(Date birthDate, String name, Owner owner, Type type) {
+    public PetInOut(Date birthDate, String name, PetIOOwner owner, PetIOType type) {
         this.birthDate = birthDate;
         this.name = name;
         this.owner = owner;
@@ -79,19 +41,19 @@ public class PetInOut {
         this.name = name;
     }
 
-    public Owner getOwner() {
+    public PetIOOwner getOwner() {
         return owner;
     }
 
-    public void setOwner(Owner owner) {
+    public void setOwner(PetIOOwner owner) {
         this.owner = owner;
     }
 
-    public Type getType() {
+    public PetIOType getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(PetIOType type) {
         this.type = type;
     }
 }

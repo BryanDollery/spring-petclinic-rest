@@ -79,9 +79,6 @@ public class PetTypeRestController {
     @PreAuthorize("hasRole(@roles.VET_ADMIN)")
     @PostMapping
     public ResponseEntity<PetType> addPetType(@RequestBody @Valid PetType petType, BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
-
-
-
         BindingErrorsResponse errors = new BindingErrorsResponse();
         HttpHeaders headers = new HttpHeaders();
         if (bindingResult.hasErrors() || (petType == null)) {
