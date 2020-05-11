@@ -53,8 +53,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = ApplicationTestConfig.class)
-@WebAppConfiguration
 public class VetRestControllerTests {
 
     public static final String PATH = "/vets/";

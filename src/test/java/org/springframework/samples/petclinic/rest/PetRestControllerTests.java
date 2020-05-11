@@ -61,15 +61,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = ApplicationTestConfig.class)
-@WebAppConfiguration
 public class PetRestControllerTests {
 
     private static final String PATH = "/pets/";
+
+
     @MockBean
     protected ClinicService clinicService;
+
     @Autowired
     private PetRestController petRestController;
+
     private MockMvc mockMvc;
 
     private List<Pet> pets;
@@ -155,7 +157,6 @@ public class PetRestControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-    @Ignore
     @Test
     @WithMockUser(roles = "OWNER_ADMIN")
     public void testCreatePetSuccess() throws Exception {
