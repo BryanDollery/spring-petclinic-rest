@@ -17,6 +17,7 @@
 package org.springframework.samples.petclinic.repository;
 
 import org.springframework.samples.petclinic.model.PetType;
+import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 
@@ -24,6 +25,7 @@ import java.util.Collection;
  *
  */
 
+@Repository
 public interface PetTypeRepository {
 
     PetType findById(int id);

@@ -17,6 +17,7 @@ package org.springframework.samples.petclinic.repository;
 
 import org.springframework.samples.petclinic.model.BaseEntity;
 import org.springframework.samples.petclinic.model.Visit;
+import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.List;
  * Repository class for <code>Visit</code> domain objects All method names are compliant with Spring Data naming
  * conventions so this interface can easily be extended for Spring Data See here: http://static.springsource.org/spring-data/jpa/docs/current/reference/html/jpa.repositories.html#jpa.query-methods.query-creation
  */
+@Repository
 public interface VisitRepository {
 
     /**

@@ -15,7 +15,6 @@
  */
 package org.springframework.samples.petclinic.repository.springdatajpa;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.samples.petclinic.model.Pet;
@@ -28,7 +27,7 @@ import java.util.List;
  * Spring Data JPA specialization of the {@link PetRepository} interface
  */
 
-@Profile("spring-data-jpa")
+
 public interface SpringDataPetRepository extends PetRepository, Repository<Pet, Integer>, PetRepositoryOverride {
 
     @Override
