@@ -19,7 +19,6 @@ package org.springframework.samples.petclinic.rest.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.rest.errors.BindingErrorsResponse;
@@ -84,7 +83,7 @@ public class PetRestController {
     @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
     @PostMapping
     @Transactional
-    public ResponseEntity<Pet> addPet(@RequestBody PetInOut pet, BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<Pet> addPet(@RequestBody Pet pet, BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
         final HttpHeaders headers = new HttpHeaders();
         final BindingErrorsResponse errors = new BindingErrorsResponse();
 
@@ -94,14 +93,9 @@ public class PetRestController {
             return new ResponseEntity<>(headers, BAD_REQUEST);
         }
 
-        final Pet petEntity = new Pet();
-        petEntity.setBirthDate(pet.getBirthDate());
-        petEntity.setOwner(clinicService.findOwnerById(pet.getOwner().getId()));
-        petEntity.setType(clinicService.findPetTypeById(pet.getType().getId()));
-        petEntity.initVisits();
-        this.clinicService.savePet(petEntity);
-        headers.setLocation(ucBuilder.path("/api/pets/{id}").buildAndExpand(petEntity.getId()).toUri());
-        return new ResponseEntity<>(petEntity, headers, CREATED);
+        this.clinicService.savePet(pet);
+        headers.setLocation(ucBuilder.path("/api/pets/{id}").buildAndExpand(pet.getId()).toUri());
+        return new ResponseEntity<>(pet, headers, CREATED);
     }
 
     @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")

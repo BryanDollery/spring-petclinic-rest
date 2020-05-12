@@ -76,19 +76,16 @@ public class SpecialtyRestController {
 
     @PreAuthorize("hasRole(@roles.VET_ADMIN)")
     @PostMapping
-    public ResponseEntity<Specialty> addSpecialty(@RequestBody @Valid SpecialityInOut specialityInOut, BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<Specialty> addSpecialty(@RequestBody @Valid Specialty specialty, BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
         BindingErrorsResponse errors = new BindingErrorsResponse();
         HttpHeaders headers = new HttpHeaders();
 
-        if (bindingResult.hasErrors() || (specialityInOut == null)) {
+        if (bindingResult.hasErrors() || (specialty == null)) {
             errors.addAllErrors(bindingResult);
             headers.add("errors", errors.toJSON());
             return new ResponseEntity<>(headers, BAD_REQUEST);
         }
 
-        Specialty specialty = new Specialty();
-        specialty.setId(specialityInOut.getId());
-        specialty.setName(specialityInOut.getName());
         this.clinicService.saveSpecialty(specialty);
         headers.setLocation(ucBuilder.path("/api/specialtys/{id}").buildAndExpand(specialty.getId()).toUri());
         return new ResponseEntity<>(specialty, headers, CREATED);

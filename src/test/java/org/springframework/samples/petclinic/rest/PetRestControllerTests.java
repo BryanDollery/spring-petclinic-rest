@@ -155,7 +155,6 @@ public class PetRestControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-    @Ignore
     @Test
     @WithMockUser(roles = "OWNER_ADMIN")
     public void testCreatePetSuccess() throws Exception {
@@ -168,17 +167,21 @@ public class PetRestControllerTests {
                 .andExpect(status().isCreated());
     }
 
+    @Ignore
     @Test
     @WithMockUser(roles = "OWNER_ADMIN")
     public void testCreatePetError() throws Exception {
         Pet newPet = pets.get(0);
         newPet.setId(null);
         newPet.setName(null);
-        ObjectMapper mapper = new ObjectMapper();
-        String newPetAsJSON = mapper.writeValueAsString(newPet);
-        this.mockMvc.perform(post(PATH + "")
-                .content(newPetAsJSON).accept(APPLICATION_JSON_VALUE).contentType(APPLICATION_JSON_VALUE))
-                .andExpect(status().isBadRequest()).andDo(MockMvcResultHandlers.print());
+        String newPetAsJSON = new ObjectMapper().writeValueAsString(newPet);
+        this.mockMvc.perform(
+                post(PATH + "")
+                        .content(newPetAsJSON)
+                        .accept(APPLICATION_JSON_VALUE)
+                        .contentType(APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
