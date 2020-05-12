@@ -20,13 +20,12 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.samples.petclinic.model.PetType;
 
 /**
- * @author Vitaliy Fedoriv
  *
  */
 
 @Profile("spring-data-jpa")
 public interface PetTypeRepositoryOverride {
-	
-	void delete(PetType petType);
+
+    void delete(PetType petType);
 
 }

@@ -46,12 +46,12 @@ import org.springframework.transaction.annotation.Transactional;
  * is no need for a teardown or cleanup script. <li> An {@link org.springframework.context.ApplicationContext
  * ApplicationContext} is also inherited and can be used for explicit bean lookup if necessary. </li> </ul>
  *
- * @author Ken Krebs
- * @author Rod Johnson
- * @author Juergen Hoeller
- * @author Sam Brannen
- * @author Michael Isvy
- * @author Vitaliy Fedoriv
+
+
+
+
+
+
  */
 public abstract class AbstractClinicServiceTests {
 

@@ -20,13 +20,12 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.samples.petclinic.model.Specialty;
 
 /**
- * @author Vitaliy Fedoriv
  *
  */
 
 @Profile("spring-data-jpa")
 public interface SpecialtyRepositoryOverride {
-	
-	void delete(Specialty specialty);
+
+    void delete(Specialty specialty);
 
 }

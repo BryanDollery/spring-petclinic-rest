@@ -17,10 +17,10 @@ public class DisableSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
         http
-            .authorizeRequests()
+                .authorizeRequests()
                 .anyRequest().permitAll()
                 .and()
-            .csrf()
+                .csrf()
                 .disable();
         // @formatter:on
     }

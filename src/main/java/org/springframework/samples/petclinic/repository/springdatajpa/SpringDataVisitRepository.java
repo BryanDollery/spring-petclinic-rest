@@ -22,9 +22,6 @@ import org.springframework.samples.petclinic.repository.VisitRepository;
 
 /**
  * Spring Data JPA specialization of the {@link VisitRepository} interface
- *
- * @author Michael Isvy
- * @author Vitaliy Fedoriv
  */
 
 @Profile("spring-data-jpa")

@@ -23,7 +23,6 @@ import org.springframework.samples.petclinic.repository.SpecialtyRepository;
 
 
 /**
- * @author Vitaliy Fedoriv
  *
  */
 

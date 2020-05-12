@@ -29,9 +29,6 @@ import org.springframework.util.StopWatch;
  * <p/>
  * This is only useful if you use JPA or JDBC.  Spring-data-jpa doesn't have any correctly annotated classes to join on
  *
- * @author Rob Harrop
- * @author Juergen Hoeller
- * @author Michael Isvy
  * @since 2.5
  */
 @ManagedResource("petclinic:type=CallMonitor")

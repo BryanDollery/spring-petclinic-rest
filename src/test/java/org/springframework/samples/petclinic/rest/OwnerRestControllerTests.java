@@ -53,7 +53,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Test class for {@link OwnerRestController}
  *
- * @author Vitaliy Fedoriv
+
  */
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)

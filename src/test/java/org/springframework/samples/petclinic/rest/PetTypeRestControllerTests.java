@@ -51,7 +51,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Test class for {@link PetTypeRestController}
  *
- * @author Vitaliy Fedoriv
+
  */
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)

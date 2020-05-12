@@ -15,7 +15,12 @@
  */
 package org.springframework.samples.petclinic.model;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.samples.petclinic.rest.JacksonCustomVisitDeserializer;
+import org.springframework.samples.petclinic.rest.JacksonCustomVisitSerializer;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,20 +29,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
 import javax.validation.constraints.NotEmpty;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.samples.petclinic.rest.JacksonCustomVisitDeserializer;
-import org.springframework.samples.petclinic.rest.JacksonCustomVisitSerializer;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.util.Date;
 
 /**
  * Simple JavaBean domain object representing a visit.
- *
- * @author Ken Krebs
  */
 @Entity
 @Table(name = "visits")
@@ -51,7 +47,7 @@ public class Visit extends BaseEntity {
     @Column(name = "visit_date")
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy/MM/dd")
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy/MM/dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     private Date date;
 
     /**
