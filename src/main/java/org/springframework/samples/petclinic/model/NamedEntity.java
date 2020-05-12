@@ -15,32 +15,25 @@
  */
 package org.springframework.samples.petclinic.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+
 import javax.validation.constraints.NotEmpty;
 
 
 /**
  * Simple JavaBean domain object adds a name property to <code>BaseEntity</code>. Used as a base class for objects
  * needing these properties.
+ *
+ * @author Ken Krebs
+ * @author Juergen Hoeller
  */
 @MappedSuperclass
 public class NamedEntity extends BaseEntity {
 
     @Column(name = "name")
     @NotEmpty
-    @JsonProperty
     private String name;
-
-    public NamedEntity() {
-    }
-
-    public NamedEntity(Integer id, @NotEmpty String name) {
-        super(id);
-        this.name = name;
-    }
 
     public String getName() {
         return this.name;

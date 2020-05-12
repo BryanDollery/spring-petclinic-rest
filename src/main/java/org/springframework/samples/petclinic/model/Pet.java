@@ -15,23 +15,6 @@
  */
 package org.springframework.samples.petclinic.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PropertyComparator;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.samples.petclinic.rest.serialisers.JacksonCustomPetDeserializer;
-import org.springframework.samples.petclinic.rest.serialisers.JacksonCustomPetSerializer;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -39,12 +22,33 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static javax.persistence.CascadeType.ALL;
-import static javax.persistence.FetchType.EAGER;
-import static javax.persistence.TemporalType.DATE;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PropertyComparator;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.samples.petclinic.rest.JacksonCustomPetDeserializer;
+import org.springframework.samples.petclinic.rest.JacksonCustomPetSerializer;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Simple business object representing a pet.
+ *
+ * @author Ken Krebs
+ * @author Juergen Hoeller
+ * @author Sam Brannen
  */
 @Entity
 @Table(name = "pets")
@@ -53,31 +57,28 @@ import static javax.persistence.TemporalType.DATE;
 public class Pet extends NamedEntity {
 
     @Column(name = "birth_date")
-    @Temporal(DATE)
+    @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy/MM/dd")
-    @JsonProperty
     private Date birthDate;
 
     @ManyToOne
     @JoinColumn(name = "type_id")
-    @JsonProperty
     private PetType type;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    @JsonProperty
     private Owner owner;
 
-    @OneToMany(cascade = ALL, mappedBy = "pet", fetch = EAGER)
-    @JsonProperty
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
     private Set<Visit> visits;
 
-    public Date getBirthDate() {
-        return this.birthDate;
-    }
 
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public Date getBirthDate() {
+        return this.birthDate;
     }
 
     public PetType getType() {
@@ -95,18 +96,12 @@ public class Pet extends NamedEntity {
     public void setOwner(Owner owner) {
         this.owner = owner;
     }
-
     @JsonIgnore
     protected Set<Visit> getVisitsInternal() {
         if (this.visits == null) {
             this.visits = new HashSet<>();
         }
         return this.visits;
-    }
-
-    public void initVisits() {
-        if (this.visits == null)
-            this.visits = new HashSet<>();
     }
 
     protected void setVisitsInternal(Set<Visit> visits) {

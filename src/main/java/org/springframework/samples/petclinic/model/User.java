@@ -1,18 +1,17 @@
 package org.springframework.samples.petclinic.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
-import static javax.persistence.CascadeType.ALL;
-import static javax.persistence.FetchType.EAGER;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "users")
@@ -20,7 +19,6 @@ public class User {
 
     @Id
     @Column(name = "username")
-    @JsonProperty
     private String username;
 
     @Column(name = "password")
@@ -29,7 +27,7 @@ public class User {
     @Column(name = "enabled")
     private Boolean enabled;
 
-    @OneToMany(cascade = ALL, mappedBy = "user", fetch = EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
     private Set<Role> roles;
 
     public String getUsername() {
@@ -66,7 +64,7 @@ public class User {
 
     @JsonIgnore
     public void addRole(String roleName) {
-        if (this.roles == null) {
+        if(this.roles == null) {
             this.roles = new HashSet<>();
         }
         Role role = new Role();

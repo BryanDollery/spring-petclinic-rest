@@ -15,33 +15,38 @@
  */
 package org.springframework.samples.petclinic.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PropertyComparator;
-import org.springframework.core.style.ToStringCreator;
-import org.springframework.samples.petclinic.rest.serialisers.JacksonCustomOwnerDeserializer;
-import org.springframework.samples.petclinic.rest.serialisers.JacksonCustomOwnerSerializer;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static javax.persistence.CascadeType.ALL;
-import static javax.persistence.FetchType.EAGER;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotEmpty;
+
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PropertyComparator;
+import org.springframework.core.style.ToStringCreator;
+import org.springframework.samples.petclinic.rest.JacksonCustomOwnerDeserializer;
+import org.springframework.samples.petclinic.rest.JacksonCustomOwnerSerializer;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Simple JavaBean domain object representing an owner.
+ *
+ * @author Ken Krebs
+ * @author Juergen Hoeller
+ * @author Sam Brannen
+ * @author Michael Isvy
  */
 @Entity
 @Table(name = "owners")
@@ -50,30 +55,20 @@ import static javax.persistence.FetchType.EAGER;
 public class Owner extends Person {
     @Column(name = "address")
     @NotEmpty
-    @JsonProperty
     private String address;
 
     @Column(name = "city")
     @NotEmpty
-    @JsonProperty
     private String city;
 
     @Column(name = "telephone")
     @NotEmpty
     @Digits(fraction = 0, integer = 10)
-    @JsonProperty
     private String telephone;
 
-    @OneToMany(cascade = ALL, mappedBy = "owner", fetch = EAGER)
-    @JsonProperty
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner", fetch = FetchType.EAGER)
     private Set<Pet> pets;
 
-    public Owner() {
-    }
-
-    public Owner(Integer id) {
-        super(id);
-    }
 
     public String getAddress() {
         return this.address;
@@ -98,7 +93,6 @@ public class Owner extends Person {
     public void setTelephone(String telephone) {
         this.telephone = telephone;
     }
-
     @JsonIgnore
     protected Set<Pet> getPetsInternal() {
         if (this.pets == null) {

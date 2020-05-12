@@ -15,34 +15,15 @@
  */
 package org.springframework.samples.petclinic.model;
 
-import org.apache.tomcat.util.codec.binary.Base64;
-
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-
-import static java.util.Base64.getEncoder;
 
 /**
- * Can be Cat, Dog, Hamster...
+ * @author Juergen Hoeller
+ *         Can be Cat, Dog, Hamster...
  */
 @Entity
 @Table(name = "types")
 public class PetType extends NamedEntity {
-    public PetType() {
-    }
 
-    public PetType(Integer id, @NotEmpty String name) {
-        super(id, name);
-    }
-
-    public void encode() {
-        final byte[] encodedName = getEncoder().encode(this.getName().getBytes());
-//        this.setName(String.valueOf(encodedName));
-    }
-
-    public PetType decode() {
-//        this.setName(String.valueOf(Base64.decodeBase64(this.getName())));
-        return this;
-    }
 }
