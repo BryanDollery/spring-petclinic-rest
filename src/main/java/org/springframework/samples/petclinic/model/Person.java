@@ -37,6 +37,13 @@ public class Person extends BaseEntity {
     @JsonProperty
     protected String lastName;
 
+    public Person() {
+    }
+
+    public Person(Integer id) {
+        super(id);
+    }
+
     public String getFirstName() {
         return this.firstName;
     }

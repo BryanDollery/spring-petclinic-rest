@@ -90,17 +90,20 @@ public class OwnerRestController {
 
     @PreAuthorize("hasRole(@roles.OWNER_ADMIN)")
     @PostMapping
-    public ResponseEntity<Owner> addOwner(@RequestBody @Valid Owner owner, BindingResult bindingResult,
-                                          UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<Owner> addOwner(@RequestBody @Valid Owner owner, BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
+
+        final Integer id = owner.getId();
         HttpHeaders headers = new HttpHeaders();
-        if (bindingResult.hasErrors() || owner.getId() != null) {
-            BindingErrorsResponse errors = new BindingErrorsResponse(owner.getId());
+
+        if (bindingResult.hasErrors() || id != null) {
+            BindingErrorsResponse errors = new BindingErrorsResponse(id);
             errors.addAllErrors(bindingResult);
             headers.add("errors", errors.toJSON());
             return new ResponseEntity<>(headers, BAD_REQUEST);
         }
+
         this.clinicService.saveOwner(owner);
-        headers.setLocation(ucBuilder.path("/api/owners/{id}").buildAndExpand(owner.getId()).toUri());
+        headers.setLocation(ucBuilder.path("/api/owners/{id}").buildAndExpand(id).toUri());
         return new ResponseEntity<>(owner, headers, CREATED);
     }
 
@@ -113,11 +116,11 @@ public class OwnerRestController {
                                              UriComponentsBuilder ucBuilder) {
 
         boolean bodyIdMatchesPathId = owner.getId() == null || ownerId == owner.getId();
+        HttpHeaders headers = new HttpHeaders();
 
         if (bindingResult.hasErrors() || !bodyIdMatchesPathId) {
             BindingErrorsResponse errors = new BindingErrorsResponse(ownerId, owner.getId());
             errors.addAllErrors(bindingResult);
-            HttpHeaders headers = new HttpHeaders();
             headers.add("errors", errors.toJSON());
             return new ResponseEntity<>(headers, BAD_REQUEST);
         }

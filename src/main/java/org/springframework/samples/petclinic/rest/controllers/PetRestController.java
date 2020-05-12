@@ -19,7 +19,6 @@ package org.springframework.samples.petclinic.rest.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.rest.errors.BindingErrorsResponse;
@@ -96,8 +95,8 @@ public class PetRestController {
 
         final Pet petEntity = new Pet();
         petEntity.setBirthDate(pet.getBirthDate());
-        petEntity.setOwner(clinicService.findOwnerById(pet.getOwner().getId()));
-        petEntity.setType(clinicService.findPetTypeById(pet.getType().getId()));
+        petEntity.setOwner(clinicService.findOwnerById(pet.getOwner()));
+        petEntity.setType(clinicService.findPetTypeById(pet.getType()));
         petEntity.initVisits();
         this.clinicService.savePet(petEntity);
         headers.setLocation(ucBuilder.path("/api/pets/{id}").buildAndExpand(petEntity.getId()).toUri());

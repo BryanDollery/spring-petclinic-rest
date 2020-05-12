@@ -68,6 +68,13 @@ public class Owner extends Person {
     @JsonProperty
     private Set<Pet> pets;
 
+    public Owner() {
+    }
+
+    public Owner(Integer id) {
+        super(id);
+    }
+
     public String getAddress() {
         return this.address;
     }

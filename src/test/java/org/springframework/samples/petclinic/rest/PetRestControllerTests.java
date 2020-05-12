@@ -18,7 +18,6 @@ package org.springframework.samples.petclinic.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +27,12 @@ import org.springframework.http.MediaType;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
+import org.springframework.samples.petclinic.rest.controllers.PetInOut;
 import org.springframework.samples.petclinic.rest.controllers.PetRestController;
 import org.springframework.samples.petclinic.rest.errors.ExceptionControllerAdvice;
 import org.springframework.samples.petclinic.service.ClinicService;
-import org.springframework.samples.petclinic.service.clinicService.ApplicationTestConfig;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -64,7 +61,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PetRestControllerTests {
 
     private static final String PATH = "/pets/";
-
 
     @MockBean
     protected ClinicService clinicService;
@@ -160,10 +156,11 @@ public class PetRestControllerTests {
     @Test
     @WithMockUser(roles = "OWNER_ADMIN")
     public void testCreatePetSuccess() throws Exception {
-        Pet newPet = pets.get(0);
-        newPet.setId(999);
+        PetInOut pet = new PetInOut(new Date(), "wibble", 1, 1);
+        given(this.clinicService.findOwnerById(1)).willReturn(new Owner(1));
+        given(this.clinicService.findPetTypeById(1)).willReturn(new PetType(1, "test"));
         ObjectMapper mapper = new ObjectMapper();
-        String newPetAsJSON = mapper.writeValueAsString(newPet);
+        String newPetAsJSON = mapper.writeValueAsString(pet);
         this.mockMvc.perform(post(PATH + "")
                 .content(newPetAsJSON).accept(APPLICATION_JSON_VALUE).contentType(APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated());

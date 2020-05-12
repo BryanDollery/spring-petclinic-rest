@@ -34,6 +34,14 @@ public class NamedEntity extends BaseEntity {
     @JsonProperty
     private String name;
 
+    public NamedEntity() {
+    }
+
+    public NamedEntity(Integer id, @NotEmpty String name) {
+        super(id);
+        this.name = name;
+    }
+
     public String getName() {
         return this.name;
     }

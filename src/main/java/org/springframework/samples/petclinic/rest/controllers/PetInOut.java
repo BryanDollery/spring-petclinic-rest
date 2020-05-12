@@ -11,14 +11,14 @@ public class PetInOut {
     @JsonProperty
     private String name;
     @JsonProperty
-    private PetIOOwner owner;
+    private int owner;
     @JsonProperty
-    private PetIOType type;
+    private int type;
 
     public PetInOut() {
     }
 
-    public PetInOut(Date birthDate, String name, PetIOOwner owner, PetIOType type) {
+    public PetInOut(Date birthDate, String name, int owner, int type) {
         this.birthDate = birthDate;
         this.name = name;
         this.owner = owner;
@@ -41,19 +41,19 @@ public class PetInOut {
         this.name = name;
     }
 
-    public PetIOOwner getOwner() {
+    public int getOwner() {
         return owner;
     }
 
-    public void setOwner(PetIOOwner owner) {
+    public void setOwner(int owner) {
         this.owner = owner;
     }
 
-    public PetIOType getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(PetIOType type) {
+    public void setType(int type) {
         this.type = type;
     }
 }
